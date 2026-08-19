@@ -266,7 +266,7 @@ export const useGiveawayStore = create<GiveawayStoreState>((set, get) => ({
                 postUrl: "",
                 postId: "",
                 accountUsername: "",
-                requireHashtag: "#freespin",
+                requireHashtag: "#rafflix",
                 requireMention: false,
                 minCommentLength: 2,
               }

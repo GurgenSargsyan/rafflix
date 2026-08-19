@@ -15,7 +15,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Freespin — платформа розыгрышей",
+  title: "Rafflix — платформа розыгрышей",
   description:
     "Создавайте стильные розыгрыши физических и цифровых призов. Бесплатные шаблоны или полный кастомный брендинг.",
 };

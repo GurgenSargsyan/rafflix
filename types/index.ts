@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- *  FREESPIN — Модели данных (ШАГ 1)
+ *  RAFFLIX — Модели данных (ШАГ 1)
  * =========================================================================
  *  Здесь описаны основные TypeScript-интерфейсы платформы: User, Giveaway,
  *  Participant, а также вспомогательные типы (Prize, Branding, Condition,
@@ -141,7 +141,7 @@ export interface GiveawayBranding {
   /** Название Google Font (например "Poppins", "Space Grotesk"). */
   fontFamily?: string;
 
-  /** Скрыть водяной знак "Powered by Freespin". */
+  /** Скрыть водяной знак "Powered by Rafflix". */
   hideWatermark: boolean;
 
   /** Кастомный домен/поддомен (заглушка на будущее). */
@@ -253,7 +253,7 @@ export interface InstagramComment {
  * интеграции.
  */
 export interface TelegramSource {
-  /** @username канала без "@", например "freespin_giveaways". */
+  /** @username канала без "@", например "rafflix_giveaways". */
   channelUsername: string;
   /** Публичная ссылка на пост: https://t.me/{channel}/{messageId}. */
   postUrl: string;

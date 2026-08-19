@@ -151,7 +151,7 @@ export function StepSource() {
             <div className="grid sm:grid-cols-2 gap-3">
               <Input
                 label="Обязательный хэштег"
-                placeholder="#freespin"
+                placeholder="#rafflix"
                 leftIcon={<Hash className="size-4" />}
                 value={ig?.requireHashtag ?? ""}
                 onChange={(e) => updateInstagramSource({ requireHashtag: e.target.value })}
@@ -249,7 +249,7 @@ export function StepSource() {
                 setTgPostUrl(e.target.value);
                 updateTelegramSource({ postUrl: e.target.value });
               }}
-              hint="Бот Freespin должен быть добавлен администратором в канал"
+              hint="Бот Rafflix должен быть добавлен администратором в канал"
             />
 
             <div>

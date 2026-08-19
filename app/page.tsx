@@ -6,7 +6,7 @@ export default function HomePage() {
     <main className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
       <div className="flex items-center gap-2 text-neon-cyan mb-4">
         <Sparkles className="size-4" />
-        <span className="text-xs font-semibold uppercase tracking-[0.2em]">Freespin MVP</span>
+        <span className="text-xs font-semibold uppercase tracking-[0.2em]">Rafflix MVP</span>
       </div>
       <h1 className="text-4xl sm:text-5xl font-bold text-white max-w-2xl leading-tight">
         Кастомные <span className="text-gradient">розыгрыши</span>, которые хочется выиграть

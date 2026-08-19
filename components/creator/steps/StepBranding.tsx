@@ -195,7 +195,7 @@ export function StepBranding() {
         <Switch
           checked={branding.hideWatermark}
           onChange={(v) => updateBranding({ hideWatermark: v })}
-          label="Скрыть водяной знак Freespin"
+          label="Скрыть водяной знак Rafflix"
           description="Ваш бренд — единственное, что увидят участники"
         />
       </div>

@@ -58,7 +58,7 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
           ) : (
             <div className="flex items-center gap-1.5 mb-4 text-sm font-semibold" style={{ color: theme.primary }}>
               <Zap className="size-4" />
-              Freespin
+              Rafflix
             </div>
           )}
 
@@ -137,7 +137,7 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
         {!theme.hideWatermark && (
           <div className="flex justify-center mt-8">
             <span className="text-[11px] text-white/25 flex items-center gap-1">
-              <Zap className="size-3" /> Powered by Freespin
+              <Zap className="size-3" /> Powered by Rafflix
             </span>
           </div>
         )}

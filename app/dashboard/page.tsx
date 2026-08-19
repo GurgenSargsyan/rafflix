@@ -21,7 +21,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neon-cyan mb-2">
-            Freespin · Дашборд
+            Rafflix · Дашборд
           </p>
           <h1 className="text-3xl font-bold text-white">Ваши розыгрыши</h1>
         </div>

@@ -84,7 +84,7 @@ export function PaymentModal() {
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Crown className="size-5 text-neon-fuchsia" />
-                    <h3 className="text-xl font-semibold text-white">Freespin Premium</h3>
+                    <h3 className="text-xl font-semibold text-white">Rafflix Premium</h3>
                   </div>
                   <p className="text-white/50 text-sm mb-6">
                     Разблокируйте кастомный брендинг для этого розыгрыша
