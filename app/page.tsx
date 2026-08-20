@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { CursorGlow } from "@/components/ui/CursorGlow";
 
 const container = {
   hidden: {},
@@ -33,6 +34,8 @@ export default function HomePage() {
             "radial-gradient(50% 38% at 50% 8%, rgba(139,92,246,0.16), transparent 70%), radial-gradient(40% 30% at 85% 75%, rgba(34,211,238,0.10), transparent 70%)",
         }}
       />
+      {/* Свечение фирменных цветов, следующее за курсором */}
+      <CursorGlow />
 
       <motion.div
         initial="hidden"

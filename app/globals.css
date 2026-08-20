@@ -48,6 +48,29 @@ body {
   }
 }
 
+/* Интерактивный фон — свечение фирменных цветов вслед за курсором (CursorGlow.tsx) */
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  background: radial-gradient(
+    600px circle at var(--glow-x, 50%) var(--glow-y, 30%),
+    rgba(139, 92, 246, 0.22),
+    rgba(217, 70, 239, 0.13) 38%,
+    rgba(34, 211, 238, 0.08) 58%,
+    transparent 72%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
 /* Кастомный скроллбар для основного контента */
 ::-webkit-scrollbar {
   width: 8px;
