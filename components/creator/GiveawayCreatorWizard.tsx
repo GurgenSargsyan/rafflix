@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useGiveawayStore, type WizardStep } from "@/store/useGiveawayStore";
+import type { EntrySourceType } from "@/types";
 import { StepIndicator } from "@/components/creator/StepIndicator";
 import { PaymentModal } from "@/components/creator/PaymentModal";
 import { Button } from "@/components/ui/Button";
@@ -48,9 +50,25 @@ function canGoNext(step: WizardStep, draft: ReturnType<typeof useGiveawayStore.g
   }
 }
 
-export function GiveawayCreatorWizard() {
-  const { draft, stepIndex, visibleSteps, goNext, goBack, goToStep } = useGiveawayStore();
+const VALID_SOURCES: EntrySourceType[] = ["form", "instagram_comments", "telegram_channel"];
+
+interface GiveawayCreatorWizardProps {
+  /** Предвыбор источника участников по ссылке с главной, напр. /create?source=telegram_channel. */
+  initialSource?: string;
+}
+
+export function GiveawayCreatorWizard({ initialSource }: GiveawayCreatorWizardProps) {
+  const { draft, stepIndex, visibleSteps, goNext, goBack, goToStep, setEntrySource } = useGiveawayStore();
   const steps = visibleSteps();
+
+  // Применяем предвыбор источника один раз при заходе с главной страницы.
+  useEffect(() => {
+    if (initialSource && VALID_SOURCES.includes(initialSource as EntrySourceType)) {
+      setEntrySource(initialSource as EntrySourceType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const currentStep = steps[stepIndex];
   const StepComponent = STEP_COMPONENTS[currentStep];
   const isLastStep = stepIndex === steps.length - 1;

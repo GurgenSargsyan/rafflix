@@ -2,7 +2,11 @@ import { GiveawayCreatorWizard } from "@/components/creator/GiveawayCreatorWizar
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
 
-export default function CreateGiveawayPage() {
+interface CreateGiveawayPageProps {
+  searchParams: { source?: string };
+}
+
+export default function CreateGiveawayPage({ searchParams }: CreateGiveawayPageProps) {
   return (
     <main className="min-h-screen px-4 py-10 sm:py-16">
       <HomeLink variant="fixed" />
@@ -14,7 +18,7 @@ export default function CreateGiveawayPage() {
           Запустите свой <span className="text-gradient">розыгрыш</span> за пару минут
         </h1>
       </div>
-      <GiveawayCreatorWizard />
+      <GiveawayCreatorWizard initialSource={searchParams.source} />
     </main>
   );
 }
