@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
+import { Inter, Roboto_Mono, Unbounded } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -11,6 +11,14 @@ const inter = Inter({
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-roboto-mono",
+  display: "swap",
+});
+
+// Логотип Rafflix и брендовые заголовки — см. components/ui/Logo.tsx
+const unbounded = Unbounded({
+  subsets: ["latin"],
+  weight: ["800", "900"],
+  variable: "--font-unbounded",
   display: "swap",
 });
 
@@ -28,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className="dark">
       <body
-        className={`${inter.variable} ${robotoMono.variable} font-sans antialiased bg-base-950 bg-grid-glow min-h-screen`}
+        className={`${inter.variable} ${robotoMono.variable} ${unbounded.variable} font-sans antialiased bg-base-950 bg-grid-glow min-h-screen`}
       >
         {children}
       </body>

@@ -9,6 +9,7 @@ import { ConditionsChecklist } from "@/components/giveaway/ConditionsChecklist";
 import { ParticipateForm } from "@/components/giveaway/ParticipateForm";
 import { InstagramCommentsCard } from "@/components/giveaway/InstagramCommentsCard";
 import { TelegramActionsCard } from "@/components/giveaway/TelegramActionsCard";
+import { Logo } from "@/components/ui/Logo";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
 import { formatNumber } from "@/lib/utils";
 import type { Giveaway } from "@/types";
@@ -56,10 +57,7 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={theme.logoUrl} alt="Логотип" className="h-12 object-contain mb-4" />
           ) : (
-            <div className="flex items-center gap-1.5 mb-4 text-sm font-semibold" style={{ color: theme.primary }}>
-              <Zap className="size-4" />
-              Rafflix
-            </div>
+            <Logo size="sm" className="mb-4" />
           )}
 
           <motion.h1
@@ -137,7 +135,8 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
         {!theme.hideWatermark && (
           <div className="flex justify-center mt-8">
             <span className="text-[11px] text-white/25 flex items-center gap-1">
-              <Zap className="size-3" /> Powered by Rafflix
+              <Zap className="size-3" /> Powered by{" "}
+              <span className="font-display font-extrabold tracking-tight">RAFFLIX</span>
             </span>
           </div>
         )}

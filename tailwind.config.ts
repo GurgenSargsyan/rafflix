@@ -12,6 +12,8 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "sans-serif"],
         mono: ["var(--font-roboto-mono)", "Roboto Mono", "monospace"],
+        // Логотип и брендовые заголовки — см. components/ui/Logo.tsx
+        display: ["var(--font-unbounded)", "Arial Black", "sans-serif"],
       },
       colors: {
         base: {

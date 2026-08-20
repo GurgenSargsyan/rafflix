@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Crown, Instagram, Send, FormInput, Users, Plus } from "lucide-react";
 import { DEMO_GIVEAWAYS } from "@/lib/mock-giveaway";
 import { HomeLink } from "@/components/ui/HomeLink";
+import { Logo } from "@/components/ui/Logo";
 import { formatNumber } from "@/lib/utils";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -20,8 +21,8 @@ export default function DashboardPage() {
       </div>
       <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neon-cyan mb-2">
-            Rafflix · Дашборд
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-neon-cyan mb-2">
+            <Logo size="sm" /> · Дашборд
           </p>
           <h1 className="text-3xl font-bold text-white">Ваши розыгрыши</h1>
         </div>

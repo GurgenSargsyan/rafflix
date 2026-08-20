@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-      <div className="flex items-center gap-2 text-neon-cyan mb-4">
-        <Sparkles className="size-4" />
-        <span className="text-xs font-semibold uppercase tracking-[0.2em]">Rafflix MVP</span>
-      </div>
+      <Logo size="lg" className="mb-3" />
+      <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-white/30 mb-6">MVP</p>
       <h1 className="text-4xl sm:text-5xl font-bold text-white max-w-2xl leading-tight">
         Кастомные <span className="text-gradient">розыгрыши</span>, которые хочется выиграть
       </h1>
