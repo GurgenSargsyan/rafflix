@@ -71,6 +71,88 @@ body {
   }
 }
 
+/* Многослойный "дышащий" фон лендинга (AmbientBackground.tsx) */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  animation: ambient-float 9s ease-in-out infinite;
+}
+
+.ambient-blob--1 {
+  top: -12%;
+  left: 10%;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 70%);
+}
+
+.ambient-blob--2 {
+  top: 25%;
+  right: -12%;
+  width: 620px;
+  height: 620px;
+  background: radial-gradient(circle, rgba(217, 70, 239, 0.15), transparent 70%);
+  animation-delay: -3s;
+}
+
+.ambient-blob--3 {
+  bottom: -18%;
+  left: 0%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.11), transparent 70%);
+  animation-delay: -6s;
+}
+
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 0%, transparent 75%);
+}
+
+@keyframes ambient-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-24px) rotate(1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob {
+    animation: none;
+  }
+}
+
+/* Карточка-"прожектор" со спотлайтом за курсором (SpotlightCard.tsx) */
+.spotlight-card-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(300px circle at var(--sx, 50%) var(--sy, 50%), rgba(139, 92, 246, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.spotlight-card:hover .spotlight-card-glow {
+  opacity: 1;
+}
+
 /* Кастомный скроллбар для основного контента */
 ::-webkit-scrollbar {
   width: 8px;
