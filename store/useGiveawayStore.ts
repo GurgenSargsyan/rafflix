@@ -7,6 +7,7 @@ import type {
   PlanTier,
   GiveawayBranding,
   GiveawayVisibility,
+  DrawStyle,
   EntrySourceType,
   InstagramSource,
   InstagramComment,
@@ -50,6 +51,7 @@ const INITIAL_DRAFT: GiveawayDraft = {
   title: "",
   description: "",
   visibility: "private",
+  drawStyle: "list",
   prizes: [
     {
       id: "prize-1",
@@ -96,6 +98,7 @@ interface GiveawayStoreState {
 
   updateDraft: (patch: Partial<GiveawayDraft>) => void;
   setVisibility: (visibility: GiveawayVisibility) => void;
+  setDrawStyle: (drawStyle: DrawStyle) => void;
   setTier: (tier: PlanTier) => void;
   selectTemplate: (templateId: string) => void;
   updateBranding: (patch: Partial<GiveawayBranding>) => void;
@@ -169,6 +172,9 @@ export const useGiveawayStore = create<GiveawayStoreState>((set, get) => ({
 
   setVisibility: (visibility) =>
     set((state) => ({ draft: { ...state.draft, visibility } })),
+
+  setDrawStyle: (drawStyle) =>
+    set((state) => ({ draft: { ...state.draft, drawStyle } })),
 
   setTier: (tier) =>
     set((state) => ({

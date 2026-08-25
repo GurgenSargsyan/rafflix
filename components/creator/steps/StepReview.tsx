@@ -16,6 +16,7 @@ import {
   ExternalLink,
   Lock,
   Globe2,
+  Disc3,
 } from "lucide-react";
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { Button } from "@/components/ui/Button";
@@ -172,6 +173,11 @@ export function StepReview() {
           icon={Users}
           label="Ожидаемая аудитория"
           value={`Неограниченно · заявки нумеруются автоматически`}
+        />
+        <SummaryRow
+          icon={Disc3}
+          label="Как раскрываем победителя"
+          value={draft.drawStyle === "wheel" ? "Колесо Фортуны" : "Барабан (последовательный список)"}
         />
       </div>
 

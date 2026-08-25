@@ -17,6 +17,7 @@ export function draftToGiveaway(draft: GiveawayDraft): Giveaway {
     status: "active",
     tier: draft.tier,
     visibility: draft.visibility,
+    drawStyle: draft.drawStyle,
     entrySource: draft.entrySource,
     instagramSource: draft.instagramSource,
     telegramSource: draft.telegramSource,
@@ -75,6 +76,7 @@ export const DEMO_GIVEAWAY: Giveaway = {
   status: "active",
   tier: "premium",
   visibility: "public",
+  drawStyle: "list",
   entrySource: "form",
   prizes: [
     {
@@ -144,6 +146,9 @@ export const DEMO_GIVEAWAY_INSTAGRAM: Giveaway = {
   status: "active",
   tier: "free",
   visibility: "public",
+  // Показываем фичу "Колесо Фортуны" на этом демо — небольшой пул (27 комментариев)
+  // отлично смотрится как колесо.
+  drawStyle: "wheel",
   entrySource: "instagram_comments",
   instagramSource: {
     postUrl: "https://instagram.com/p/DEMO_NIKE_POST/",
@@ -202,6 +207,7 @@ export const DEMO_GIVEAWAY_TELEGRAM: Giveaway = {
   status: "active",
   tier: "free",
   visibility: "private",
+  drawStyle: "list",
   entrySource: "telegram_channel",
   telegramSource: {
     channelUsername: "rafflix_giveaways",
@@ -251,6 +257,7 @@ export const DEMO_GIVEAWAY_COMPLETED: Giveaway = {
   status: "completed",
   tier: "free",
   visibility: "private",
+  drawStyle: "list",
   entrySource: "form",
   prizes: [
     {

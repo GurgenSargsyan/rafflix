@@ -9,6 +9,7 @@ import { ConditionsChecklist } from "@/components/giveaway/ConditionsChecklist";
 import { ParticipateForm } from "@/components/giveaway/ParticipateForm";
 import { InstagramCommentsCard } from "@/components/giveaway/InstagramCommentsCard";
 import { TelegramActionsCard } from "@/components/giveaway/TelegramActionsCard";
+import { SpinWheelBackground } from "@/components/giveaway/SpinWheelBackground";
 import { Logo } from "@/components/ui/Logo";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
 import { formatNumber } from "@/lib/utils";
@@ -45,10 +46,14 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
     >
       {/* Затемнение + свечение поверх фона для читаемости */}
       <div className="absolute inset-0 bg-black/40" />
-      <div
-        className="absolute -top-40 left-1/2 -translate-x-1/2 size-[560px] rounded-full blur-3xl opacity-25 animate-pulse-slow"
-        style={{ background: `radial-gradient(circle, ${theme.primary}, transparent 70%)` }}
-      />
+      {giveaway.drawStyle === "wheel" ? (
+        <SpinWheelBackground primaryColor={theme.primary} secondaryColor={theme.secondary} />
+      ) : (
+        <div
+          className="absolute -top-40 left-1/2 -translate-x-1/2 size-[560px] rounded-full blur-3xl opacity-25 animate-pulse-slow"
+          style={{ background: `radial-gradient(circle, ${theme.primary}, transparent 70%)` }}
+        />
+      )}
 
       <div className="relative z-10 px-4 py-10 sm:py-16 max-w-2xl mx-auto">
         {/* Логотип / бренд-шапка */}

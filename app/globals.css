@@ -153,6 +153,33 @@ body {
   opacity: 1;
 }
 
+/* Декоративное 3D-колесо на фоне лендинга розыгрыша с drawStyle: "wheel"
+   (SpinWheelBackground.tsx) — статичный наклон "под перспективой" + отдельный
+   внутренний слой, который медленно и бесконечно крутится вокруг своей оси. */
+.spin3d-wheel-tilt {
+  transform: perspective(1000px) rotateX(62deg);
+  transform-style: preserve-3d;
+}
+
+.spin3d-wheel-spin {
+  animation: spin3d-slow 26s linear infinite;
+}
+
+@keyframes spin3d-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin3d-wheel-spin {
+    animation: none;
+  }
+}
+
 /* Кастомный скроллбар для основного контента */
 ::-webkit-scrollbar {
   width: 8px;

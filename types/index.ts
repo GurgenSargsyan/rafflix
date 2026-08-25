@@ -62,6 +62,17 @@ export type RandomizerAlgorithm = "csprng_seeded" | "external_drand_beacon";
 export type GiveawayVisibility = "private" | "public";
 
 /**
+ * Способ визуального проведения розыгрыша:
+ * - "list"  — последовательный "барабан" (RandomizerReveal): имена
+ *   пробегают строкой и останавливаются на победителе. Подходит для любого
+ *   числа участников.
+ * - "wheel" — Колесо Фортуны (SpinWheelReveal): те же честные механики
+ *   Fair Randomizer (см. lib/randomizer.ts), но результат раскрывается
+ *   вращением колеса с именами участников — по образцу it-som.net/spin-wheel.
+ */
+export type DrawStyle = "list" | "wheel";
+
+/**
  * Источник участников розыгрыша:
  * - "form"               — классическая форма участия на сайте;
  * - "instagram_comments" — участники импортируются из комментариев под постом
@@ -337,6 +348,9 @@ export interface Giveaway {
   /** "private" (по умолчанию) — только по прямой ссылке; "public" — виден в /giveaways. */
   visibility: GiveawayVisibility;
 
+  /** "list" (по умолчанию) — последовательный барабан; "wheel" — Колесо Фортуны. */
+  drawStyle: DrawStyle;
+
   /** Как собираются участники: форма, комментарии в Instagram или Telegram-канал. */
   entrySource: EntrySourceType;
   /** Заполнено, если entrySource === "instagram_comments". */
@@ -427,6 +441,7 @@ export interface GiveawayDraft {
   title: string;
   description: string;
   visibility: GiveawayVisibility;
+  drawStyle: DrawStyle;
   prizes: Prize[];
   entrySource: EntrySourceType;
   instagramSource?: InstagramSource;

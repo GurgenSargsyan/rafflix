@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Instagram, Send, Mail, Users, Trophy, PartyPopper } from "lucide-react";
 import { RandomizerReveal } from "@/components/creator/RandomizerReveal";
+import { SpinWheelReveal } from "@/components/creator/SpinWheelReveal";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
 import { saveRandomizerResult } from "@/lib/services/supabase";
@@ -143,15 +144,25 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
           )}
         </div>
 
-        {/* Fair Randomizer */}
+        {/* Fair Randomizer — визуализация зависит от giveaway.drawStyle */}
         <div className="space-y-4">
-          <RandomizerReveal
-            participants={participants}
-            prizes={giveaway.prizes}
-            primaryColor={theme.primary}
-            secondaryColor={theme.secondary}
-            onComplete={handleRandomizerComplete}
-          />
+          {giveaway.drawStyle === "wheel" ? (
+            <SpinWheelReveal
+              participants={participants}
+              prizes={giveaway.prizes}
+              primaryColor={theme.primary}
+              secondaryColor={theme.secondary}
+              onComplete={handleRandomizerComplete}
+            />
+          ) : (
+            <RandomizerReveal
+              participants={participants}
+              prizes={giveaway.prizes}
+              primaryColor={theme.primary}
+              secondaryColor={theme.secondary}
+              onComplete={handleRandomizerComplete}
+            />
+          )}
           {justSaved && (
             <div className="rounded-2xl border border-neon-lime/30 bg-neon-lime/5 p-4 flex items-center justify-between gap-3 flex-wrap">
               <p className="flex items-center gap-1.5 text-sm text-white">
