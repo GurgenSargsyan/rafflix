@@ -16,6 +16,7 @@ export function draftToGiveaway(draft: GiveawayDraft): Giveaway {
     slug: "preview",
     status: "active",
     tier: draft.tier,
+    visibility: draft.visibility,
     entrySource: draft.entrySource,
     instagramSource: draft.instagramSource,
     telegramSource: draft.telegramSource,
@@ -73,6 +74,7 @@ export const DEMO_GIVEAWAY: Giveaway = {
   slug: "demo-iphone",
   status: "active",
   tier: "premium",
+  visibility: "public",
   entrySource: "form",
   prizes: [
     {
@@ -141,6 +143,7 @@ export const DEMO_GIVEAWAY_INSTAGRAM: Giveaway = {
   slug: "demo-nike-comments",
   status: "active",
   tier: "free",
+  visibility: "public",
   entrySource: "instagram_comments",
   instagramSource: {
     postUrl: "https://instagram.com/p/DEMO_NIKE_POST/",
@@ -198,6 +201,7 @@ export const DEMO_GIVEAWAY_TELEGRAM: Giveaway = {
   slug: "demo-telegram-premium",
   status: "active",
   tier: "free",
+  visibility: "private",
   entrySource: "telegram_channel",
   telegramSource: {
     channelUsername: "rafflix_giveaways",
@@ -246,6 +250,7 @@ export const DEMO_GIVEAWAY_COMPLETED: Giveaway = {
   slug: "demo-results",
   status: "completed",
   tier: "free",
+  visibility: "private",
   entrySource: "form",
   prizes: [
     {
@@ -298,4 +303,13 @@ export async function getGiveawayBySlug(slug: string): Promise<Giveaway | null> 
 /** Заглушка запроса по ID (для страниц дашборда). */
 export async function getGiveawayById(id: string): Promise<Giveaway | null> {
   return DEMO_GIVEAWAYS.find((g) => g.id === id) ?? null;
+}
+
+/**
+ * Публичный каталог (/giveaways) — только активные розыгрыши с visibility: "public".
+ * Приватные (доступные лишь по прямой ссылке) сюда никогда не попадают,
+ * даже если они сейчас активны — см. DEMO_GIVEAWAY_TELEGRAM.
+ */
+export async function getPublicActiveGiveaways(): Promise<Giveaway[]> {
+  return DEMO_GIVEAWAYS.filter((g) => g.visibility === "public" && g.status === "active");
 }

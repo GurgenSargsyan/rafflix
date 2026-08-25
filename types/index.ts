@@ -52,6 +52,16 @@ export type EntryConditionType =
 export type RandomizerAlgorithm = "csprng_seeded" | "external_drand_beacon";
 
 /**
+ * Видимость розыгрыша:
+ * - "private" — доступен только по прямой ссылке. Для своей аудитории:
+ *   ссылку даёт сам организатор (в Instagram/Telegram/где угодно), розыгрыш
+ *   не светится в общем каталоге. Значение по умолчанию.
+ * - "public"  — дополнительно попадает в общий каталог `/giveaways`, где
+ *   его может найти и открыть любой посетитель платформы.
+ */
+export type GiveawayVisibility = "private" | "public";
+
+/**
  * Источник участников розыгрыша:
  * - "form"               — классическая форма участия на сайте;
  * - "instagram_comments" — участники импортируются из комментариев под постом
@@ -324,6 +334,9 @@ export interface Giveaway {
   status: GiveawayStatus;
   tier: PlanTier; // "free" | "premium" — выбранный тариф для ЭТОГО розыгрыша
 
+  /** "private" (по умолчанию) — только по прямой ссылке; "public" — виден в /giveaways. */
+  visibility: GiveawayVisibility;
+
   /** Как собираются участники: форма, комментарии в Instagram или Telegram-канал. */
   entrySource: EntrySourceType;
   /** Заполнено, если entrySource === "instagram_comments". */
@@ -413,6 +426,7 @@ export interface Participant {
 export interface GiveawayDraft {
   title: string;
   description: string;
+  visibility: GiveawayVisibility;
   prizes: Prize[];
   entrySource: EntrySourceType;
   instagramSource?: InstagramSource;

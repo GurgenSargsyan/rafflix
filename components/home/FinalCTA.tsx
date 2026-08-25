@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard } from "lucide-react";
+import { ArrowRight, Compass, LayoutDashboard } from "lucide-react";
 import { Reveal } from "@/components/home/Reveal";
 
 export function FinalCTA() {
@@ -33,6 +33,12 @@ export function FinalCTA() {
                 className="inline-flex items-center gap-2 border border-white/15 text-white px-7 py-3.5 rounded-2xl font-medium hover:bg-white/5 transition-colors"
               >
                 <LayoutDashboard className="size-4" /> Дашборд создателя
+              </Link>
+              <Link
+                href="/giveaways"
+                className="inline-flex items-center gap-2 border border-white/15 text-white px-7 py-3.5 rounded-2xl font-medium hover:bg-white/5 transition-colors"
+              >
+                <Compass className="size-4" /> Найти розыгрыш
               </Link>
             </div>
           </div>
