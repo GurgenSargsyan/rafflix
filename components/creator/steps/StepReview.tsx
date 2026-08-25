@@ -14,6 +14,8 @@ import {
   Rocket,
   Users,
   ExternalLink,
+  Lock,
+  Globe2,
 } from "lucide-react";
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { Button } from "@/components/ui/Button";
@@ -21,7 +23,28 @@ import { draftToGiveaway } from "@/lib/mock-giveaway";
 import { saveGiveaway } from "@/lib/services/supabase";
 import { criteriaLabel } from "@/lib/services/telegram";
 import { placeLabel, totalWinnerCount, resolveShowValue } from "@/lib/prizes";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, cn } from "@/lib/utils";
+import type { GiveawayVisibility } from "@/types";
+
+const VISIBILITY_OPTIONS: {
+  value: GiveawayVisibility;
+  icon: typeof Lock;
+  title: string;
+  description: string;
+}[] = [
+  {
+    value: "private",
+    icon: Lock,
+    title: "Только по ссылке",
+    description: "Для своей аудитории — не появляется в общем каталоге розыгрышей",
+  },
+  {
+    value: "public",
+    icon: Globe2,
+    title: "Публичный",
+    description: "Дополнительно виден всем на странице /giveaways — больше охвата",
+  },
+];
 
 const PRIZE_TYPE_SHORT = { physical: "физ.", digital: "цифр.", money: "деньги" } as const;
 
@@ -46,7 +69,7 @@ function SummaryRow({
 }
 
 export function StepReview() {
-  const { draft } = useGiveawayStore();
+  const { draft, setVisibility } = useGiveawayStore();
   const router = useRouter();
   const [isPublishing, setIsPublishing] = useState(false);
   const [published, setPublished] = useState(false);
@@ -150,6 +173,33 @@ export function StepReview() {
           label="Ожидаемая аудитория"
           value={`Неограниченно · заявки нумеруются автоматически`}
         />
+      </div>
+
+      <div>
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-white/50">Видимость</p>
+        <div className="grid grid-cols-2 gap-3">
+          {VISIBILITY_OPTIONS.map(({ value, icon: Icon, title, description }) => {
+            const active = draft.visibility === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                disabled={published}
+                onClick={() => setVisibility(value)}
+                className={cn(
+                  "text-left p-4 rounded-2xl border transition-all glass-light disabled:opacity-60 disabled:cursor-not-allowed",
+                  active
+                    ? "border-neon-violet/60 shadow-glow bg-neon-violet/10"
+                    : "border-white/10 hover:border-white/20"
+                )}
+              >
+                <Icon className={cn("size-5 mb-2", active ? "text-neon-violet" : "text-white/50")} />
+                <p className="text-sm font-medium text-white">{title}</p>
+                <p className="text-xs text-white/40 mt-1">{description}</p>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {!published ? (
