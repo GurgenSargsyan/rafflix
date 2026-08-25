@@ -63,7 +63,7 @@ export function StepPlan() {
           active={draft.tier === "premium"}
           onClick={() => handleSelect("premium")}
           title="Premium"
-          price="$19 / розыгрыш"
+          price="$4.99 / розыгрыш"
           badge={
             <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide bg-cta-gradient px-2 py-1 rounded-full text-white">
               <Crown className="size-3" /> Рекомендуем

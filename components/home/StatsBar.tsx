@@ -9,7 +9,7 @@ const STATS = [
   { value: "3", label: "источника участников", sub: "Instagram, Telegram, форма" },
   { value: "100%", label: "честный алгоритм", sub: "seed + SHA-256, проверяемо" },
   { value: "< 5 мин", label: "от идеи до публикации", sub: "мастер из пары шагов" },
-  { value: "$19", label: "Premium разово", sub: "без подписки, за розыгрыш" },
+  { value: "$4.99", label: "Premium разово", sub: "без подписки, за розыгрыш" },
 ];
 
 export function StatsBar() {

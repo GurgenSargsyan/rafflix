@@ -1,4 +1,4 @@
-import type { Giveaway, Participant } from "@/types";
+import type { Giveaway, Participant, RandomizerResult } from "@/types";
 
 /**
  * =========================================================================
@@ -46,9 +46,43 @@ export async function saveParticipant(participant: Participant): Promise<{ ok: t
   return { ok: true, id: participant.id };
 }
 
-/** Сохранить результат честного розыгрыша (для аудита/публичной верификации). */
-export async function saveRandomizerResult(giveawayId: string, seed: string, hash: string) {
+const RESULT_STORAGE_PREFIX = "rafflix:randomizer-result:";
+
+/**
+ * Сохранить результат честного розыгрыша (для аудита/публичной верификации
+ * на странице /g/[slug]/results). В реальной интеграции — просто UPDATE
+ * giveaways SET result = ... WHERE id = giveawayId.
+ *
+ * Пока нет настоящей БД — кладём в localStorage браузера. Это НЕ имитация
+ * "для вида": страница результатов реально читает оттуда и показывает
+ * актуальный результат, если розыгрыш был проведён в этом же браузере.
+ */
+export async function saveRandomizerResult(
+  giveawayId: string,
+  result: RandomizerResult
+): Promise<{ ok: true }> {
   await new Promise((r) => setTimeout(r, 400));
-  console.info("[mock:supabase] saveRandomizerResult", giveawayId, { seed, hash });
-  return { ok: true as const };
+  console.info("[mock:supabase] saveRandomizerResult", giveawayId, {
+    seed: result.seed,
+    hash: result.verificationHash,
+  });
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(`${RESULT_STORAGE_PREFIX}${giveawayId}`, JSON.stringify(result));
+    } catch {
+      // localStorage может быть недоступен (приватный режим и т.п.) — не критично для демо.
+    }
+  }
+  return { ok: true };
+}
+
+/** Прочитать ранее сохранённый результат розыгрыша (см. saveRandomizerResult). */
+export function getStoredRandomizerResult(giveawayId: string): RandomizerResult | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(`${RESULT_STORAGE_PREFIX}${giveawayId}`);
+    return raw ? (JSON.parse(raw) as RandomizerResult) : null;
+  } catch {
+    return null;
+  }
 }

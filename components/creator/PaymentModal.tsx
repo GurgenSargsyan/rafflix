@@ -95,7 +95,7 @@ export function PaymentModal() {
 
                   <div className="rounded-2xl glass-light border border-white/10 p-4 mb-6 flex items-center justify-between">
                     <span className="text-sm text-white/70">Единоразовый платёж</span>
-                    <span className="text-2xl font-bold text-gradient font-mono">$19</span>
+                    <span className="text-2xl font-bold text-gradient font-mono">$4.99</span>
                   </div>
 
                   <form onSubmit={handlePay} className="space-y-4">
@@ -112,7 +112,7 @@ export function PaymentModal() {
 
                     <Button type="submit" variant="primary" size="lg" className="w-full mt-2">
                       <Lock className="size-4" />
-                      Оплатить $19
+                      Оплатить $4.99
                     </Button>
 
                     <p className="flex items-center justify-center gap-1.5 text-[11px] text-white/35 pt-1">

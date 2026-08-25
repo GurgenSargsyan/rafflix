@@ -28,14 +28,14 @@ export interface CreateCheckoutResult {
   currency: string;
 }
 
-const PREMIUM_PRICE_USD = 19;
+const PREMIUM_PRICE_USD = 4.99;
 
-/** Заглушка создания checkout-сессии/PaymentIntent на $19 за Premium-розыгрыш. */
+/** Заглушка создания checkout-сессии/PaymentIntent на $4.99 за Premium-розыгрыш. */
 export async function createPremiumCheckout(): Promise<CreateCheckoutResult> {
   await new Promise((r) => setTimeout(r, 500));
   return {
     clientSecret: `mock_pi_${Math.random().toString(36).slice(2)}_secret`,
-    amount: PREMIUM_PRICE_USD * 100, // Stripe считает в центах
+    amount: Math.round(PREMIUM_PRICE_USD * 100), // Stripe считает в центах
     currency: "usd",
   };
 }

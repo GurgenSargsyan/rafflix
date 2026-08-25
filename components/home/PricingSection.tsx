@@ -61,7 +61,7 @@ export function PricingSection() {
               </span>
             </div>
             <p className="relative text-3xl font-bold font-mono text-white mb-1">
-              $19 <span className="text-sm font-normal text-white/40">/ розыгрыш</span>
+              $4.99 <span className="text-sm font-normal text-white/40">/ розыгрыш</span>
             </p>
             <p className="relative text-xs text-white/35 mb-5">Разово, не ежемесячно</p>
             <ul className="relative space-y-2.5">

@@ -233,7 +233,62 @@ export const DEMO_GIVEAWAY_TELEGRAM: Giveaway = {
   updatedAt: new Date().toISOString(),
 };
 
-export const DEMO_GIVEAWAYS: Giveaway[] = [DEMO_GIVEAWAY, DEMO_GIVEAWAY_INSTAGRAM, DEMO_GIVEAWAY_TELEGRAM];
+/**
+ * Демо-розыгрыш №4 — уже ЗАВЕРШЁН, с готовым результатом Fair Randomizer.
+ * Показывает страницу /g/[slug]/results и сертификат для Stories сразу,
+ * без необходимости сначала запускать розыгрыш вручную в дашборде.
+ */
+export const DEMO_GIVEAWAY_COMPLETED: Giveaway = {
+  id: "demo-4",
+  ownerId: "demo-user",
+  title: "Розыгрыш наушников Sony WH-1000XM5 🎧",
+  description: "Разыгрывали топовые наушники с шумоподавлением среди участников формы на сайте.",
+  slug: "demo-results",
+  status: "completed",
+  tier: "free",
+  entrySource: "form",
+  prizes: [
+    {
+      id: "prize-sony",
+      type: "physical",
+      title: "Sony WH-1000XM5",
+      description: "Цвет чёрный, гарантия 1 год",
+      estimatedValue: 349,
+      currency: "USD",
+      quantity: 1,
+    },
+  ],
+  entryConditions: [],
+  customFields: [],
+  templateId: FREE_TEMPLATES[3].id,
+  startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+  endDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  timezone: "Europe/Moscow",
+  participantsCount: 42,
+  randomizerResult: {
+    algorithm: "csprng_seeded",
+    seed: "8f3d9a21c74e5b60d19f2a3c4e5f6071",
+    verificationHash: "4a7c1e9b3f6d8025c1a4e7f9b2d5083c6e1a4f7b9d2c5e8031a4c7f9b2e5d80c",
+    winners: [
+      {
+        participantId: "p_form_demo-4_17",
+        prizeId: "prize-sony",
+        placeInPrize: 0,
+        selectedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+    executedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+  createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+  updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+};
+
+export const DEMO_GIVEAWAYS: Giveaway[] = [
+  DEMO_GIVEAWAY,
+  DEMO_GIVEAWAY_INSTAGRAM,
+  DEMO_GIVEAWAY_TELEGRAM,
+  DEMO_GIVEAWAY_COMPLETED,
+];
 
 /** Заглушка асинхронного запроса к БД по slug'у (заменить на Supabase select). */
 export async function getGiveawayBySlug(slug: string): Promise<Giveaway | null> {

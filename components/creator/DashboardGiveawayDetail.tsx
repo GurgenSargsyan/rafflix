@@ -2,17 +2,18 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Instagram, Send, Mail, Users } from "lucide-react";
+import { ArrowLeft, ExternalLink, Instagram, Send, Mail, Users, Trophy, PartyPopper } from "lucide-react";
 import { RandomizerReveal } from "@/components/creator/RandomizerReveal";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
+import { saveRandomizerResult } from "@/lib/services/supabase";
 import {
   generateMockFormParticipants,
   generateMockInstagramParticipants,
   generateMockTelegramParticipants,
 } from "@/lib/mock-participants";
 import { formatNumber } from "@/lib/utils";
-import type { Giveaway } from "@/types";
+import type { Giveaway, RandomizerResult } from "@/types";
 
 interface DashboardGiveawayDetailProps {
   giveaway: Giveaway;
@@ -21,6 +22,12 @@ interface DashboardGiveawayDetailProps {
 export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailProps) {
   const theme = resolveGiveawayTheme(giveaway);
   const [showAllParticipants, setShowAllParticipants] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
+
+  const handleRandomizerComplete = async (result: RandomizerResult) => {
+    await saveRandomizerResult(giveaway.id, result);
+    setJustSaved(true);
+  };
 
   // В реальном приложении — запрос участников из БД по giveaway.id.
   const participants = useMemo(() => {
@@ -52,13 +59,22 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
           <h1 className="text-2xl sm:text-3xl font-bold text-white">{giveaway.title}</h1>
           <p className="text-white/50 text-sm mt-1.5 max-w-lg">{giveaway.description}</p>
         </div>
-        <Link
-          href={`/g/${giveaway.slug}`}
-          target="_blank"
-          className="inline-flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-lg border border-white/15 text-white/70 hover:text-white hover:border-white/30 transition-colors shrink-0"
-        >
-          Публичная страница <ExternalLink className="size-3.5" />
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href={`/g/${giveaway.slug}`}
+            target="_blank"
+            className="inline-flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-lg border border-white/15 text-white/70 hover:text-white hover:border-white/30 transition-colors"
+          >
+            Публичная страница <ExternalLink className="size-3.5" />
+          </Link>
+          <Link
+            href={`/g/${giveaway.slug}/results`}
+            target="_blank"
+            className="inline-flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-lg border border-white/15 text-white/70 hover:text-white hover:border-white/30 transition-colors"
+          >
+            <Trophy className="size-3.5" /> Результаты
+          </Link>
+        </div>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-6">
@@ -128,12 +144,29 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
         </div>
 
         {/* Fair Randomizer */}
-        <RandomizerReveal
-          participants={participants}
-          prizes={giveaway.prizes}
-          primaryColor={theme.primary}
-          secondaryColor={theme.secondary}
-        />
+        <div className="space-y-4">
+          <RandomizerReveal
+            participants={participants}
+            prizes={giveaway.prizes}
+            primaryColor={theme.primary}
+            secondaryColor={theme.secondary}
+            onComplete={handleRandomizerComplete}
+          />
+          {justSaved && (
+            <div className="rounded-2xl border border-neon-lime/30 bg-neon-lime/5 p-4 flex items-center justify-between gap-3 flex-wrap">
+              <p className="flex items-center gap-1.5 text-sm text-white">
+                <PartyPopper className="size-4 text-neon-lime" /> Результаты сохранены и опубликованы
+              </p>
+              <Link
+                href={`/g/${giveaway.slug}/results`}
+                target="_blank"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-neon-lime/15 text-neon-lime hover:bg-neon-lime/25 transition-colors"
+              >
+                Открыть страницу результатов <ExternalLink className="size-3.5" />
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );
