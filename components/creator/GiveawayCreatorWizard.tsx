@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useGiveawayStore, type WizardStep } from "@/store/useGiveawayStore";
-import type { EntrySourceType } from "@/types";
+import type { DrawStyle, EntrySourceType } from "@/types";
 import { StepIndicator } from "@/components/creator/StepIndicator";
 import { PaymentModal } from "@/components/creator/PaymentModal";
 import { Button } from "@/components/ui/Button";
@@ -51,20 +51,27 @@ function canGoNext(step: WizardStep, draft: ReturnType<typeof useGiveawayStore.g
 }
 
 const VALID_SOURCES: EntrySourceType[] = ["form", "instagram_comments", "telegram_channel"];
+const VALID_DRAW_STYLES: DrawStyle[] = ["list", "wheel"];
 
 interface GiveawayCreatorWizardProps {
   /** Предвыбор источника участников по ссылке с главной, напр. /create?source=telegram_channel. */
   initialSource?: string;
+  /** Предвыбор способа розыгрыша по ссылке с главной, напр. /create?draw=wheel. */
+  initialDrawStyle?: string;
 }
 
-export function GiveawayCreatorWizard({ initialSource }: GiveawayCreatorWizardProps) {
-  const { draft, stepIndex, visibleSteps, goNext, goBack, goToStep, setEntrySource } = useGiveawayStore();
+export function GiveawayCreatorWizard({ initialSource, initialDrawStyle }: GiveawayCreatorWizardProps) {
+  const { draft, stepIndex, visibleSteps, goNext, goBack, goToStep, setEntrySource, setDrawStyle } =
+    useGiveawayStore();
   const steps = visibleSteps();
 
-  // Применяем предвыбор источника один раз при заходе с главной страницы.
+  // Применяем предвыбор источника/способа розыгрыша один раз при заходе с главной страницы.
   useEffect(() => {
     if (initialSource && VALID_SOURCES.includes(initialSource as EntrySourceType)) {
       setEntrySource(initialSource as EntrySourceType);
+    }
+    if (initialDrawStyle && VALID_DRAW_STYLES.includes(initialDrawStyle as DrawStyle)) {
+      setDrawStyle(initialDrawStyle as DrawStyle);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

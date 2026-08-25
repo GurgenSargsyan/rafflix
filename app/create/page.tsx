@@ -3,7 +3,7 @@ import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
 
 interface CreateGiveawayPageProps {
-  searchParams: { source?: string };
+  searchParams: { source?: string; draw?: string };
 }
 
 export default function CreateGiveawayPage({ searchParams }: CreateGiveawayPageProps) {
@@ -18,7 +18,7 @@ export default function CreateGiveawayPage({ searchParams }: CreateGiveawayPageP
           Запустите свой <span className="text-gradient">розыгрыш</span> за пару минут
         </h1>
       </div>
-      <GiveawayCreatorWizard initialSource={searchParams.source} />
+      <GiveawayCreatorWizard initialSource={searchParams.source} initialDrawStyle={searchParams.draw} />
     </main>
   );
 }

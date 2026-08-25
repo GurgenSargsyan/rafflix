@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Wand2, LayoutTemplate, Instagram, Send, ArrowUpRight } from "lucide-react";
+import { Wand2, LayoutTemplate, Instagram, Send, Disc3, ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/home/Reveal";
 
 const ACCENTS = {
@@ -10,6 +10,7 @@ const ACCENTS = {
   lime: { text: "text-neon-lime", border: "hover:border-neon-lime/40", glow: "rgba(163,230,53,0.45)", wash: "from-neon-lime/15" },
   fuchsia: { text: "text-neon-fuchsia", border: "hover:border-neon-fuchsia/40", glow: "rgba(217,70,239,0.5)", wash: "from-neon-fuchsia/15" },
   cyan: { text: "text-neon-cyan", border: "hover:border-neon-cyan/40", glow: "rgba(34,211,238,0.5)", wash: "from-neon-cyan/15" },
+  pink: { text: "text-neon-pink", border: "hover:border-neon-pink/40", glow: "rgba(236,72,153,0.5)", wash: "from-neon-pink/15" },
 } as const;
 
 interface OptionCardProps {
@@ -72,7 +73,7 @@ function OptionCard({ href, icon: Icon, title, description, accent, featured }: 
   );
 }
 
-/** Четыре главных пути входа: создать с нуля / шаблон / Instagram / Telegram. */
+/** Главные пути входа: создать с нуля / шаблон / Instagram / Telegram / Колесо Фортуны. */
 export function QuickStart() {
   return (
     <Reveal className="relative z-10 max-w-3xl mx-auto px-4">
@@ -84,7 +85,7 @@ export function QuickStart() {
         accent="violet"
         featured
       />
-      <div className="grid sm:grid-cols-3 gap-4 mt-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
         <OptionCard
           href="/create"
           icon={LayoutTemplate}
@@ -105,6 +106,13 @@ export function QuickStart() {
           title="Розыгрыш в Telegram"
           description="Лайк, репост или комментарий в канале"
           accent="cyan"
+        />
+        <OptionCard
+          href="/create?draw=wheel"
+          icon={Disc3}
+          title="Колесо Фортуны"
+          description="Эффектное вращающееся колесо вместо обычного барабана"
+          accent="pink"
         />
       </div>
     </Reveal>

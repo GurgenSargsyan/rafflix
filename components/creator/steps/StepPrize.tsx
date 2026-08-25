@@ -1,19 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Package,
-  Gift,
-  Banknote,
-  Plus,
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-  Crown,
-  AlertCircle,
-  List,
-  Disc3,
-} from "lucide-react";
+import { Package, Gift, Banknote, Plus, Trash2, ChevronUp, ChevronDown, Crown, AlertCircle } from "lucide-react";
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { StepEyebrow } from "@/components/creator/StepEyebrow";
 import { Input, Textarea } from "@/components/ui/Input";
@@ -21,7 +9,7 @@ import { Switch } from "@/components/ui/Switch";
 import { Button } from "@/components/ui/Button";
 import { placeLabel, totalWinnerCount, isValueRequired, resolveShowValue } from "@/lib/prizes";
 import { cn } from "@/lib/utils";
-import type { DrawStyle, Prize, PrizeType } from "@/types";
+import type { Prize, PrizeType } from "@/types";
 
 const PRIZE_TYPES: { value: PrizeType; label: string; icon: typeof Package }[] = [
   { value: "physical", label: "Физический", icon: Package },
@@ -29,28 +17,8 @@ const PRIZE_TYPES: { value: PrizeType; label: string; icon: typeof Package }[] =
   { value: "money", label: "Денежный", icon: Banknote },
 ];
 
-const DRAW_STYLE_OPTIONS: {
-  value: DrawStyle;
-  icon: typeof List;
-  title: string;
-  description: string;
-}[] = [
-  {
-    value: "list",
-    icon: List,
-    title: "Барабан",
-    description: "Имена пробегают строкой и останавливаются на победителе",
-  },
-  {
-    value: "wheel",
-    icon: Disc3,
-    title: "Колесо Фортуны",
-    description: "Крутящееся колесо с именами участников — эффектный вариант для стрима",
-  },
-];
-
 export function StepPrize() {
-  const { draft, addPrize, removePrize, updatePrize, movePrize, setDrawStyle } = useGiveawayStore();
+  const { draft, addPrize, removePrize, updatePrize, movePrize } = useGiveawayStore();
 
   return (
     <div className="space-y-6">
@@ -220,34 +188,6 @@ export function StepPrize() {
         Всего победителей: <span className="text-white/60 font-medium">{totalWinnerCount(draft.prizes)}</span>
         {" "}по {draft.prizes.length} {draft.prizes.length === 1 ? "призу" : "призам"}
       </p>
-
-      <div>
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-white/50">
-          Как раскрываем победителя
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          {DRAW_STYLE_OPTIONS.map(({ value, icon: Icon, title, description }) => {
-            const active = draft.drawStyle === value;
-            return (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setDrawStyle(value)}
-                className={cn(
-                  "text-left p-4 rounded-2xl border transition-all glass-light",
-                  active
-                    ? "border-neon-violet/60 shadow-glow bg-neon-violet/10"
-                    : "border-white/10 hover:border-white/20"
-                )}
-              >
-                <Icon className={cn("size-5 mb-2", active ? "text-neon-violet" : "text-white/50")} />
-                <p className="text-sm font-medium text-white">{title}</p>
-                <p className="text-xs text-white/40 mt-1">{description}</p>
-              </button>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

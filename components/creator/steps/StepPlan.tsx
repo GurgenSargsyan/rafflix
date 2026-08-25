@@ -1,12 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Crown, Lock, Palette } from "lucide-react";
+import { Check, Crown, Lock, Palette, List, Disc3 } from "lucide-react";
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { StepEyebrow } from "@/components/creator/StepEyebrow";
 import { FREE_TEMPLATES } from "@/lib/templates";
 import { cn } from "@/lib/utils";
-import type { PlanTier } from "@/types";
+import type { DrawStyle, PlanTier } from "@/types";
+
+const DRAW_STYLE_OPTIONS: {
+  value: DrawStyle;
+  icon: typeof List;
+  title: string;
+  description: string;
+}[] = [
+  {
+    value: "list",
+    icon: List,
+    title: "Барабан",
+    description: "Имена пробегают строкой и останавливаются на победителе",
+  },
+  {
+    value: "wheel",
+    icon: Disc3,
+    title: "Колесо Фортуны",
+    description: "Крутящееся колесо с именами участников — эффектный вариант для стрима",
+  },
+];
 
 const FREE_FEATURES = [
   "Готовые стильные шаблоны",
@@ -24,7 +44,7 @@ const PREMIUM_FEATURES = [
 ];
 
 export function StepPlan() {
-  const { draft, setTier, selectTemplate, isPremiumUnlocked, openPaymentModal, markPremiumUnlocked } =
+  const { draft, setTier, setDrawStyle, selectTemplate, isPremiumUnlocked, openPaymentModal, markPremiumUnlocked } =
     useGiveawayStore();
 
   const handleSelect = (tier: PlanTier) => {
@@ -92,8 +112,36 @@ export function StepPlan() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-3"
+          className="space-y-6"
         >
+          <div className="space-y-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-white/40">
+              Как раскрываем победителя
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {DRAW_STYLE_OPTIONS.map(({ value, icon: Icon, title, description }) => {
+                const active = draft.drawStyle === value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setDrawStyle(value)}
+                    className={cn(
+                      "text-left p-4 rounded-2xl border transition-all glass-light",
+                      active
+                        ? "border-neon-violet/60 shadow-glow bg-neon-violet/10"
+                        : "border-white/10 hover:border-white/20"
+                    )}
+                  >
+                    <Icon className={cn("size-5 mb-2", active ? "text-neon-violet" : "text-white/50")} />
+                    <p className="text-sm font-medium text-white">{title}</p>
+                    <p className="text-xs text-white/40 mt-1">{description}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <p className="text-xs font-medium uppercase tracking-wide text-white/40">
             Выберите шаблон оформления
           </p>
