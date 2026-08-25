@@ -9,6 +9,7 @@ import { ConditionsChecklist } from "@/components/giveaway/ConditionsChecklist";
 import { ParticipateForm } from "@/components/giveaway/ParticipateForm";
 import { InstagramCommentsCard } from "@/components/giveaway/InstagramCommentsCard";
 import { TelegramActionsCard } from "@/components/giveaway/TelegramActionsCard";
+import { ManualListCard } from "@/components/giveaway/ManualListCard";
 import { SpinWheelBackground } from "@/components/giveaway/SpinWheelBackground";
 import { Logo } from "@/components/ui/Logo";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
@@ -106,6 +107,14 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
           /* Участники импортируются из действий в Telegram-канале — форма не нужна */
           <TelegramActionsCard
             source={giveaway.telegramSource}
+            primaryColor={theme.primary}
+            secondaryColor={theme.secondary}
+          />
+        ) : giveaway.entrySource === "manual_list" ? (
+          /* Организатор уже вписал варианты сам — форма участия не нужна */
+          <ManualListCard
+            entries={giveaway.manualEntries ?? []}
+            drawStyle={giveaway.drawStyle}
             primaryColor={theme.primary}
             secondaryColor={theme.secondary}
           />

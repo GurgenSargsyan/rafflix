@@ -5,6 +5,7 @@ import {
   generateMockFormParticipants,
   generateMockInstagramParticipants,
   generateMockTelegramParticipants,
+  manualEntriesToParticipants,
 } from "@/lib/mock-participants";
 
 interface ResultsPageProps {
@@ -28,7 +29,9 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
       ? generateMockInstagramParticipants(giveaway.id, giveaway.participantsCount)
       : giveaway.entrySource === "telegram_channel"
         ? generateMockTelegramParticipants(giveaway.id, giveaway.participantsCount)
-        : generateMockFormParticipants(giveaway.id, giveaway.participantsCount);
+        : giveaway.entrySource === "manual_list"
+          ? manualEntriesToParticipants(giveaway.id, giveaway.manualEntries ?? [])
+          : generateMockFormParticipants(giveaway.id, giveaway.participantsCount);
 
   return <ResultsView giveaway={giveaway} participants={participants} />;
 }

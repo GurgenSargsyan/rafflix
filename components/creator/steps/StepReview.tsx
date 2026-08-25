@@ -17,6 +17,7 @@ import {
   Lock,
   Globe2,
   Disc3,
+  ListPlus,
 } from "lucide-react";
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { Button } from "@/components/ui/Button";
@@ -123,7 +124,9 @@ export function StepReview() {
               ? Instagram
               : draft.entrySource === "telegram_channel"
                 ? Send
-                : FormInput
+                : draft.entrySource === "manual_list"
+                  ? ListPlus
+                  : FormInput
           }
           label="Источник участников"
           value={
@@ -138,6 +141,11 @@ export function StepReview() {
                 Telegram-канал ({draft.telegramSource?.requiredCriteria?.map(criteriaLabel).join(" + ") || "—"})
                 {draft.telegramSource?.qualifiedCount != null &&
                   ` · ${formatNumber(draft.telegramSource.qualifiedCount)} подходящих подписчиков`}
+              </span>
+            ) : draft.entrySource === "manual_list" ? (
+              <span className="text-neon-fuchsia font-medium">
+                Свой список ({draft.manualEntries?.length ?? 0}{" "}
+                {(draft.manualEntries?.length ?? 0) === 1 ? "вариант" : "вариантов"})
               </span>
             ) : (
               "Форма на сайте"

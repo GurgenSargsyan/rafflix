@@ -21,6 +21,7 @@ export function draftToGiveaway(draft: GiveawayDraft): Giveaway {
     entrySource: draft.entrySource,
     instagramSource: draft.instagramSource,
     telegramSource: draft.telegramSource,
+    manualEntries: draft.manualEntries,
     prizes: draft.prizes,
     entryConditions: draft.entryConditions,
     customFields: draft.customFields,
@@ -295,11 +296,51 @@ export const DEMO_GIVEAWAY_COMPLETED: Giveaway = {
   updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
 };
 
+/**
+ * Демо-розыгрыш №5 — entrySource: "manual_list" + drawStyle: "wheel".
+ * Без импорта аудитории: организатор сам вписал варианты, Колесо Фортуны
+ * крутится прямо по ним. Показывает самый быстрый путь в приложении —
+ * то, что открывается по карточке "Колесо Фортуны" на главной.
+ */
+export const DEMO_GIVEAWAY_WHEEL: Giveaway = {
+  id: "demo-5",
+  ownerId: "demo-user",
+  title: "Кто платит за кофе на этой неделе ☕",
+  description:
+    "Никакой регистрации — организатор сам вписал имена команды, колесо выбирает честно и без обид.",
+  slug: "demo-coffee-wheel",
+  status: "active",
+  tier: "free",
+  visibility: "public",
+  drawStyle: "wheel",
+  entrySource: "manual_list",
+  manualEntries: ["Настя", "Игорь", "Диана", "Тимур", "Олег"],
+  prizes: [
+    {
+      id: "prize-coffee",
+      type: "digital",
+      title: "Платит за кофе всю неделю 😄",
+      description: "Шуточный «приз» для тимбилдинга — колесо решает",
+      quantity: 1,
+    },
+  ],
+  entryConditions: [],
+  customFields: [],
+  templateId: FREE_TEMPLATES[0].id,
+  startDate: new Date().toISOString(),
+  endDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  timezone: "Europe/Moscow",
+  participantsCount: 5,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
 export const DEMO_GIVEAWAYS: Giveaway[] = [
   DEMO_GIVEAWAY,
   DEMO_GIVEAWAY_INSTAGRAM,
   DEMO_GIVEAWAY_TELEGRAM,
   DEMO_GIVEAWAY_COMPLETED,
+  DEMO_GIVEAWAY_WHEEL,
 ];
 
 /** Заглушка асинхронного запроса к БД по slug'у (заменить на Supabase select). */

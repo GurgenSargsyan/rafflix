@@ -42,6 +42,7 @@ function canGoNext(step: WizardStep, draft: ReturnType<typeof useGiveawayStore.g
           (draft.telegramSource?.requiredCriteria?.length ?? 0) > 0
         );
       }
+      if (draft.entrySource === "manual_list") return (draft.manualEntries?.length ?? 0) >= 2;
       return true;
     case "plan":
       return draft.tier === "free" ? !!draft.templateId : !!draft.branding;
@@ -69,6 +70,10 @@ export function GiveawayCreatorWizard({ initialSource, initialDrawStyle }: Givea
   useEffect(() => {
     if (initialSource && VALID_SOURCES.includes(initialSource as EntrySourceType)) {
       setEntrySource(initialSource as EntrySourceType);
+    } else if (initialDrawStyle === "wheel") {
+      // С карточки "Колесо Фортуны" (без явного ?source=) — сразу свой список,
+      // самый быстрый путь: без импорта аудитории, вписал варианты и крутишь.
+      setEntrySource("manual_list");
     }
     if (initialDrawStyle && VALID_DRAW_STYLES.includes(initialDrawStyle as DrawStyle)) {
       setDrawStyle(initialDrawStyle as DrawStyle);

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Crown, Instagram, Send, FormInput, Users, Globe2 } from "lucide-react";
+import { ArrowRight, Crown, Instagram, Send, FormInput, ListPlus, Users, Globe2 } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import type { EntrySourceType, Giveaway } from "@/types";
@@ -17,6 +17,7 @@ const FILTERS: { value: EntrySourceType | "all"; label: string; icon: typeof Glo
   { value: "instagram_comments", label: "Instagram", icon: Instagram },
   { value: "telegram_channel", label: "Telegram", icon: Send },
   { value: "form", label: "Форма на сайте", icon: FormInput },
+  { value: "manual_list", label: "Свой список", icon: ListPlus },
 ];
 
 function SourceBadge({ source }: { source: EntrySourceType }) {
@@ -31,6 +32,13 @@ function SourceBadge({ source }: { source: EntrySourceType }) {
     return (
       <>
         <Send className="size-3.5" /> Telegram-канал
+      </>
+    );
+  }
+  if (source === "manual_list") {
+    return (
+      <>
+        <ListPlus className="size-3.5" /> Свой список
       </>
     );
   }

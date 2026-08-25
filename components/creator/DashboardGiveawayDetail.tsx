@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Instagram, Send, Mail, Users, Trophy, PartyPopper } from "lucide-react";
+import { ArrowLeft, ExternalLink, Instagram, Send, Mail, ListPlus, Users, Trophy, PartyPopper } from "lucide-react";
 import { RandomizerReveal } from "@/components/creator/RandomizerReveal";
 import { SpinWheelReveal } from "@/components/creator/SpinWheelReveal";
 import { HomeLink } from "@/components/ui/HomeLink";
@@ -12,6 +12,7 @@ import {
   generateMockFormParticipants,
   generateMockInstagramParticipants,
   generateMockTelegramParticipants,
+  manualEntriesToParticipants,
 } from "@/lib/mock-participants";
 import { formatNumber } from "@/lib/utils";
 import type { Giveaway, RandomizerResult } from "@/types";
@@ -38,8 +39,11 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
     if (giveaway.entrySource === "telegram_channel") {
       return generateMockTelegramParticipants(giveaway.id, giveaway.participantsCount);
     }
+    if (giveaway.entrySource === "manual_list") {
+      return manualEntriesToParticipants(giveaway.id, giveaway.manualEntries ?? []);
+    }
     return generateMockFormParticipants(giveaway.id, giveaway.participantsCount);
-  }, [giveaway.id, giveaway.entrySource, giveaway.participantsCount]);
+  }, [giveaway.id, giveaway.entrySource, giveaway.participantsCount, giveaway.manualEntries]);
 
   const visibleParticipants = showAllParticipants ? participants : participants.slice(0, 8);
 
@@ -94,6 +98,11 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
             {giveaway.entrySource === "telegram_channel" && (
               <span className="flex items-center gap-1 text-[11px] text-neon-cyan">
                 <Send className="size-3.5" /> из Telegram-канала
+              </span>
+            )}
+            {giveaway.entrySource === "manual_list" && (
+              <span className="flex items-center gap-1 text-[11px] text-neon-fuchsia">
+                <ListPlus className="size-3.5" /> свой список
               </span>
             )}
           </div>

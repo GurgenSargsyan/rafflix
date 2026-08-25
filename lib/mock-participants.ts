@@ -46,6 +46,26 @@ export function generateMockInstagramParticipants(giveawayId: string, count: num
   }));
 }
 
+/**
+ * Не "мок" в строгом смысле — реальные варианты, вписанные организатором
+ * руками (entrySource: "manual_list"). Никакого импорта аудитории: строка
+ * из GiveawayDraft.manualEntries/Giveaway.manualEntries = один участник/сектор.
+ */
+export function manualEntriesToParticipants(giveawayId: string, entries: string[]): Participant[] {
+  return entries.map((entry, i) => ({
+    id: `p_manual_${giveawayId}_${i}`,
+    giveawayId,
+    source: "manual_entry",
+    name: entry,
+    email: "",
+    customAnswers: {},
+    completedConditionIds: [],
+    entryNumber: i + 1,
+    isWinner: false,
+    createdAt: new Date().toISOString(),
+  }));
+}
+
 /** Мок-участники, выполнившие условия (лайк/репост/комментарий) в Telegram-канале. */
 export function generateMockTelegramParticipants(giveawayId: string, count: number): Participant[] {
   return Array.from({ length: count }, (_, i) => ({

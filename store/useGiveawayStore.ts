@@ -64,6 +64,7 @@ const INITIAL_DRAFT: GiveawayDraft = {
   entrySource: "form",
   instagramSource: undefined,
   telegramSource: undefined,
+  manualEntries: undefined,
   entryConditions: [],
   tier: "free",
   templateId: FREE_TEMPLATES[0].id,
@@ -117,6 +118,8 @@ interface GiveawayStoreState {
   setEntrySource: (source: EntrySourceType) => void;
   updateInstagramSource: (patch: Partial<InstagramSource>) => void;
   syncInstagramComments: () => Promise<void>;
+
+  setManualEntries: (entries: string[]) => void;
 
   updateTelegramSource: (patch: Partial<TelegramSource>) => void;
   toggleTelegramCriterion: (criterion: TelegramCriteriaType) => void;
@@ -292,8 +295,13 @@ export const useGiveawayStore = create<GiveawayStoreState>((set, get) => ({
                 requiredCriteria: ["reaction", "comment"],
               }
             : state.draft.telegramSource,
+        manualEntries:
+          source === "manual_list" ? state.draft.manualEntries ?? [] : state.draft.manualEntries,
       },
     })),
+
+  setManualEntries: (entries) =>
+    set((state) => ({ draft: { ...state.draft, manualEntries: entries } })),
 
   updateInstagramSource: (patch) =>
     set((state) => ({

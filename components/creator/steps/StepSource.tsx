@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Instagram,
   Send,
   FormInput,
+  ListPlus,
   RefreshCw,
   Heart,
   AlertCircle,
@@ -14,9 +15,13 @@ import {
   AtSign,
   MessageCircle,
   Repeat2,
+  ArrowDownAZ,
+  Shuffle,
+  Eraser,
 } from "lucide-react";
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { StepEyebrow } from "@/components/creator/StepEyebrow";
+import { WheelPreview } from "@/components/creator/WheelPreview";
 import { Input } from "@/components/ui/Input";
 import { Switch } from "@/components/ui/Switch";
 import { Button } from "@/components/ui/Button";
@@ -48,7 +53,23 @@ const SOURCE_OPTIONS: {
     description: "Классическая регистрация: имя, email, соц. сети.",
     icon: FormInput,
   },
+  {
+    value: "manual_list",
+    title: "Свой список",
+    description: "Впишите варианты вручную — без регистрации, идеально для Колеса Фортуны.",
+    icon: ListPlus,
+  },
 ];
+
+/** Косметический шаффл для кнопки "Перемешать" — не связан с честностью розыгрыша. */
+function shuffleEntries(items: string[]): string[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 const CRITERIA_ICONS: Record<TelegramCriteriaType, typeof Heart> = {
   reaction: Heart,
@@ -71,15 +92,28 @@ export function StepSource() {
     isSyncingTelegram,
     telegramSyncError,
     telegramActions,
+    setManualEntries,
   } = useGiveawayStore();
 
   const [igPostUrl, setIgPostUrl] = useState(draft.instagramSource?.postUrl ?? "");
   const [tgPostUrl, setTgPostUrl] = useState(draft.telegramSource?.postUrl ?? "");
+  const [manualText, setManualText] = useState(() => (draft.manualEntries ?? []).join("\n"));
 
   const isInstagram = draft.entrySource === "instagram_comments";
   const isTelegram = draft.entrySource === "telegram_channel";
+  const isManualList = draft.entrySource === "manual_list";
   const ig = draft.instagramSource;
   const tg = draft.telegramSource;
+
+  const manualEntries = useMemo(
+    () => manualText.split("\n").map((line) => line.trim()).filter(Boolean),
+    [manualText]
+  );
+
+  const applyManualEntries = (entries: string[]) => {
+    setManualText(entries.join("\n"));
+    setManualEntries(entries);
+  };
 
   return (
     <div className="space-y-6">
@@ -92,7 +126,7 @@ export function StepSource() {
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-3">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {SOURCE_OPTIONS.map(({ value, title, description, icon: Icon }) => {
           const active = draft.entrySource === value;
           const isRecommended = value === "instagram_comments";
@@ -343,6 +377,91 @@ export function StepSource() {
                 </p>
               </div>
             )}
+          </motion.div>
+        )}
+
+        {isManualList && (
+          <motion.div
+            key="manual-panel"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="rounded-2xl border border-white/10 glass-light p-5"
+          >
+            <div className="flex items-center gap-2 text-white/70 text-sm font-medium mb-4">
+              <ListPlus className="size-4 text-neon-fuchsia" />
+              Свой список вариантов
+            </div>
+
+            <div className="grid sm:grid-cols-[1fr_auto] gap-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium uppercase tracking-wide text-white/50">
+                    Варианты
+                  </label>
+                  <span className="text-xs text-white/40">
+                    {manualEntries.length} {manualEntries.length === 1 ? "вариант" : "вариантов"}
+                  </span>
+                </div>
+
+                <textarea
+                  value={manualText}
+                  onChange={(e) => {
+                    setManualText(e.target.value);
+                    setManualEntries(
+                      e.target.value
+                        .split("\n")
+                        .map((line) => line.trim())
+                        .filter(Boolean)
+                    );
+                  }}
+                  placeholder={"Да\nНет\nПозже\nЕщё раз"}
+                  rows={8}
+                  className="w-full rounded-xl bg-base-900/50 border border-white/10 p-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-neon-fuchsia/50 resize-none"
+                />
+                <p className="text-[11px] text-white/30">Один вариант на строку</p>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    disabled={manualEntries.length < 2}
+                    onClick={() => applyManualEntries([...manualEntries].sort((a, b) => a.localeCompare(b, "ru")))}
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/15 text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                  >
+                    <ArrowDownAZ className="size-3.5" /> А-Я
+                  </button>
+                  <button
+                    type="button"
+                    disabled={manualEntries.length < 2}
+                    onClick={() => applyManualEntries(shuffleEntries(manualEntries))}
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/15 text-white/60 hover:text-white hover:border-white/30 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                  >
+                    <Shuffle className="size-3.5" /> Перемешать
+                  </button>
+                  <button
+                    type="button"
+                    disabled={manualEntries.length === 0}
+                    onClick={() => applyManualEntries([])}
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-white/15 text-white/40 hover:text-red-400 hover:border-red-400/30 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                  >
+                    <Eraser className="size-3.5" /> Очистить
+                  </button>
+                </div>
+
+                {manualEntries.length < 2 && (
+                  <p className="flex items-center gap-1.5 text-xs text-amber-400/80">
+                    <AlertCircle className="size-3.5" /> Впишите минимум 2 варианта
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-col items-center justify-center gap-2">
+                <WheelPreview labels={manualEntries} />
+                <p className="text-[11px] text-white/30 text-center max-w-[180px]">
+                  Колесо обновляется живьём — секторов столько, сколько строк слева
+                </p>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Crown, Instagram, Send, FormInput, Users, Plus } from "lucide-react";
+import { ArrowRight, Crown, Instagram, Send, FormInput, ListPlus, Users, Plus } from "lucide-react";
 import { DEMO_GIVEAWAYS } from "@/lib/mock-giveaway";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
@@ -74,6 +74,10 @@ export default function DashboardPage() {
                 ) : g.entrySource === "telegram_channel" ? (
                   <>
                     <Send className="size-3.5" /> Telegram-канал
+                  </>
+                ) : g.entrySource === "manual_list" ? (
+                  <>
+                    <ListPlus className="size-3.5" /> Свой список
                   </>
                 ) : (
                   <>

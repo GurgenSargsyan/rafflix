@@ -78,9 +78,12 @@ export type DrawStyle = "list" | "wheel";
  * - "instagram_comments" — участники импортируются из комментариев под постом
  *   в Instagram;
  * - "telegram_channel"   — участники импортируются из реакций/репостов/
- *   комментариев к посту в Telegram-канале.
+ *   комментариев к посту в Telegram-канале;
+ * - "manual_list"        — организатор просто вписывает список вариантов
+ *   руками (без импорта реальной аудитории) — самый быстрый способ для
+ *   Колеса Фортуны: вариант в строке = сектор колеса, без регистрации.
  */
-export type EntrySourceType = "form" | "instagram_comments" | "telegram_channel";
+export type EntrySourceType = "form" | "instagram_comments" | "telegram_channel" | "manual_list";
 
 /**
  * Критерий участия в Telegram-розыгрыше — что должен сделать подписчик
@@ -357,6 +360,8 @@ export interface Giveaway {
   instagramSource?: InstagramSource;
   /** Заполнено, если entrySource === "telegram_channel". */
   telegramSource?: TelegramSource;
+  /** Заполнено, если entrySource === "manual_list" — один вариант на строку. */
+  manualEntries?: string[];
 
   /**
    * Призы розыгрыша, ПО ПОРЯДКУ РОЗЫГРЫША: индекс 0 — приз, который
@@ -391,8 +396,8 @@ export interface Participant {
   id: string;
   giveawayId: string; // Giveaway.id
 
-  /** Откуда пришёл участник: форма, комментарий в IG или действие в Telegram. */
-  source: "form" | "instagram_comment" | "telegram_action";
+  /** Откуда пришёл участник: форма, комментарий в IG, действие в Telegram или ручной список. */
+  source: "form" | "instagram_comment" | "telegram_action" | "manual_entry";
 
   name: string;
   email: string;
@@ -446,6 +451,7 @@ export interface GiveawayDraft {
   entrySource: EntrySourceType;
   instagramSource?: InstagramSource;
   telegramSource?: TelegramSource;
+  manualEntries?: string[];
   entryConditions: EntryCondition[];
   tier: PlanTier;
   templateId?: string;
