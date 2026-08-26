@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Dice5, Coins, Hash, Split, Disc3, ArrowUpRight } from "lucide-react";
+import { Dice5, Coins, Hash, Disc3, ArrowUpRight } from "lucide-react";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
 
@@ -24,13 +24,6 @@ const GAMES = [
     title: "Генератор случайных чисел",
     description: "Задайте диапазон — получите честное случайное число",
     accent: "text-neon-cyan",
-  },
-  {
-    href: "/games/short-straw",
-    icon: Split,
-    title: "Короткая соломинка",
-    description: "Впишите варианты — один вытянет короткую соломинку",
-    accent: "text-neon-fuchsia",
   },
   {
     href: "/create?draw=wheel",
