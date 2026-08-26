@@ -6,7 +6,7 @@ import { Reveal } from "@/components/home/Reveal";
  * Каждая цифра здесь буквально верна по устройству продукта.
  */
 const STATS = [
-  { value: "3", label: "источника участников", sub: "Instagram, Telegram, форма" },
+  { value: "8", label: "источников участников", sub: "Instagram, Telegram, X, YouTube, Facebook и другие" },
   { value: "100%", label: "честный алгоритм", sub: "seed + SHA-256, проверяемо" },
   { value: "< 5 мин", label: "от идеи до публикации", sub: "мастер из пары шагов" },
   { value: "$4.99", label: "Premium разово", sub: "без подписки, за розыгрыш" },

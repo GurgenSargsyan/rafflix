@@ -2,6 +2,7 @@ import { Compass } from "lucide-react";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
 import { PublicGiveawaysDirectory } from "@/components/giveaway/PublicGiveawaysDirectory";
+import { GiveawayCodeSearch } from "@/components/giveaway/GiveawayCodeSearch";
 import { getPublicActiveGiveaways } from "@/lib/mock-giveaway";
 
 /**
@@ -30,6 +31,10 @@ export default async function GiveawaysDirectoryPage() {
           Открытые розыгрыши, в которых может поучаствовать любой желающий. Выберите соцсеть и
           следуйте условиям — победителей выбирает честный алгоритм Rafflix.
         </p>
+      </div>
+
+      <div className="mb-8 max-w-sm">
+        <GiveawayCodeSearch />
       </div>
 
       <PublicGiveawaysDirectory giveaways={giveaways} />

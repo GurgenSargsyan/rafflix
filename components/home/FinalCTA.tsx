@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, LayoutDashboard } from "lucide-react";
+import { ArrowRight, Compass, LayoutDashboard, Dices, Wrench } from "lucide-react";
 import { Reveal } from "@/components/home/Reveal";
 
 export function FinalCTA() {
@@ -39,6 +39,21 @@ export function FinalCTA() {
                 className="inline-flex items-center gap-2 border border-white/15 text-white px-7 py-3.5 rounded-2xl font-medium hover:bg-white/5 transition-colors"
               >
                 <Compass className="size-4" /> Найти розыгрыш
+              </Link>
+            </div>
+
+            <div className="mt-5 flex items-center justify-center gap-5 text-sm">
+              <Link
+                href="/games"
+                className="inline-flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
+              >
+                <Dices className="size-3.5" /> Мини-игры
+              </Link>
+              <Link
+                href="/tools"
+                className="inline-flex items-center gap-1.5 text-white/40 hover:text-white transition-colors"
+              >
+                <Wrench className="size-3.5" /> Инструменты
               </Link>
             </div>
           </div>
