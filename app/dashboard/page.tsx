@@ -1,9 +1,34 @@
 import Link from "next/link";
-import { ArrowRight, Crown, Instagram, Send, FormInput, ListPlus, Users, Plus } from "lucide-react";
+import {
+  ArrowRight,
+  Crown,
+  Instagram,
+  Send,
+  Twitter,
+  Youtube,
+  Facebook,
+  Layers,
+  FormInput,
+  ListPlus,
+  Users,
+  Plus,
+} from "lucide-react";
 import { DEMO_GIVEAWAYS } from "@/lib/mock-giveaway";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
 import { formatNumber } from "@/lib/utils";
+import type { EntrySourceType } from "@/types";
+
+const SOURCE_LABEL: Record<EntrySourceType, { icon: typeof Instagram; label: string }> = {
+  instagram_comments: { icon: Instagram, label: "Instagram-комментарии" },
+  telegram_channel: { icon: Send, label: "Telegram-канал" },
+  twitter_engagement: { icon: Twitter, label: "X (Twitter)" },
+  youtube_comments: { icon: Youtube, label: "YouTube" },
+  facebook_engagement: { icon: Facebook, label: "Facebook" },
+  multi_platform: { icon: Layers, label: "Несколько площадок" },
+  manual_list: { icon: ListPlus, label: "Свой список" },
+  form: { icon: FormInput, label: "Форма на сайте" },
+};
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Черновик",
@@ -67,23 +92,14 @@ export default function DashboardPage() {
 
             <div className="flex items-center justify-between text-xs text-white/45 border-t border-white/10 pt-3">
               <div className="flex items-center gap-1.5">
-                {g.entrySource === "instagram_comments" ? (
-                  <>
-                    <Instagram className="size-3.5" /> Instagram-комментарии
-                  </>
-                ) : g.entrySource === "telegram_channel" ? (
-                  <>
-                    <Send className="size-3.5" /> Telegram-канал
-                  </>
-                ) : g.entrySource === "manual_list" ? (
-                  <>
-                    <ListPlus className="size-3.5" /> Свой список
-                  </>
-                ) : (
-                  <>
-                    <FormInput className="size-3.5" /> Форма на сайте
-                  </>
-                )}
+                {(() => {
+                  const { icon: Icon, label } = SOURCE_LABEL[g.entrySource];
+                  return (
+                    <>
+                      <Icon className="size-3.5" /> {label}
+                    </>
+                  );
+                })()}
               </div>
               <div className="flex items-center gap-1.5">
                 <Users className="size-3.5" /> {formatNumber(g.participantsCount)}

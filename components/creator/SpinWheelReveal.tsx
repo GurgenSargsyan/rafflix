@@ -2,9 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Disc3, Trophy, ShieldCheck, PartyPopper, Instagram, Send, Mail, Crown } from "lucide-react";
+import {
+  Disc3,
+  Trophy,
+  ShieldCheck,
+  PartyPopper,
+  Instagram,
+  Send,
+  Twitter,
+  Youtube,
+  Facebook,
+  Mail,
+  Crown,
+  Shield,
+} from "lucide-react";
 import { runFairRandomizer } from "@/lib/randomizer";
-import { placeLabel } from "@/lib/prizes";
+import { placeLabel, winnerPlaceLabel } from "@/lib/prizes";
 import { Button } from "@/components/ui/Button";
 import type { Participant, Prize, RandomizerResult, Winner } from "@/types";
 
@@ -19,12 +32,18 @@ interface SpinWheelRevealProps {
 function participantLabel(p: Participant) {
   if (p.source === "instagram_comment") return `@${p.instagram?.username ?? p.name}`;
   if (p.source === "telegram_action") return `@${p.telegram?.username ?? p.name}`;
+  if (p.source === "twitter_action") return `@${p.twitter?.username ?? p.name}`;
+  if (p.source === "youtube_comment") return `@${p.youtube?.username ?? p.name}`;
+  if (p.source === "facebook_action") return p.facebook?.username ?? p.name;
   return p.name;
 }
 
 function SourceIcon({ p }: { p: Participant }) {
   if (p.source === "instagram_comment") return <Instagram className="size-3 text-white/30 shrink-0" />;
   if (p.source === "telegram_action") return <Send className="size-3 text-white/30 shrink-0" />;
+  if (p.source === "twitter_action") return <Twitter className="size-3 text-white/30 shrink-0" />;
+  if (p.source === "youtube_comment") return <Youtube className="size-3 text-white/30 shrink-0" />;
+  if (p.source === "facebook_action") return <Facebook className="size-3 text-white/30 shrink-0" />;
   return <Mail className="size-3 text-white/30 shrink-0" />;
 }
 
@@ -235,7 +254,11 @@ export function SpinWheelReveal({
                       if (!p) return null;
                       return (
                         <p key={w.participantId} className="flex items-center gap-1.5 text-sm text-white truncate">
-                          <Trophy className="size-3.5 shrink-0" style={{ color: primaryColor }} />
+                          {w.isBackup ? (
+                            <Shield className="size-3.5 shrink-0 text-white/40" />
+                          ) : (
+                            <Trophy className="size-3.5 shrink-0" style={{ color: primaryColor }} />
+                          )}
                           <span
                             className="size-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
                             style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
@@ -244,6 +267,11 @@ export function SpinWheelReveal({
                           </span>
                           {participantLabel(p)}
                           <SourceIcon p={p} />
+                          {w.isBackup && (
+                            <span className="text-[10px] text-white/35 shrink-0">
+                              ({winnerPlaceLabel(w.placeInPrize, prize.quantity)})
+                            </span>
+                          )}
                         </p>
                       );
                     })}

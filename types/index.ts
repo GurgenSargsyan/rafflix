@@ -79,17 +79,40 @@ export type DrawStyle = "list" | "wheel";
  *   в Instagram;
  * - "telegram_channel"   — участники импортируются из реакций/репостов/
  *   комментариев к посту в Telegram-канале;
+ * - "twitter_engagement" — участники импортируются из ретвитов/ответов на твит;
+ * - "youtube_comments"   — участники импортируются из комментариев под видео;
+ * - "facebook_engagement"— участники импортируются из комментариев/лайков
+ *   под постом на странице Facebook;
+ * - "multi_platform"     — несколько постов с разных площадок объединяются
+ *   в один общий пул участников одного розыгрыша;
  * - "manual_list"        — организатор просто вписывает список вариантов
  *   руками (без импорта реальной аудитории) — самый быстрый способ для
  *   Колеса Фортуны: вариант в строке = сектор колеса, без регистрации.
  */
-export type EntrySourceType = "form" | "instagram_comments" | "telegram_channel" | "manual_list";
+export type EntrySourceType =
+  | "form"
+  | "instagram_comments"
+  | "telegram_channel"
+  | "twitter_engagement"
+  | "youtube_comments"
+  | "facebook_engagement"
+  | "multi_platform"
+  | "manual_list";
 
 /**
  * Критерий участия в Telegram-розыгрыше — что должен сделать подписчик
  * с постом в канале, чтобы попасть в пул участников.
  */
 export type TelegramCriteriaType = "reaction" | "forward" | "comment";
+
+/** Критерий участия в розыгрыше на X (Twitter): ретвит и/или ответ на твит. */
+export type TwitterCriteriaType = "retweet" | "reply";
+
+/** Критерий участия в розыгрыше на Facebook: комментарий и/или лайк/реакция. */
+export type FacebookCriteriaType = "comment" | "like";
+
+/** Соцсеть-источник одного поста внутри объединённого ("multi_platform") розыгрыша. */
+export type MultiPlatformKind = "instagram" | "telegram" | "twitter" | "youtube" | "facebook";
 
 /* -------------------------------------------------------------------------
  * USER
@@ -147,6 +170,14 @@ export interface Prize {
 
   /** Сколько победителей получат именно этот приз. */
   quantity: number;
+
+  /**
+   * Сколько "запасных" победителей резервировать сверх quantity — если
+   * основной победитель не откликнется, приз переходит по очереди к
+   * запасным (Winner.isBackup). Fair Randomizer резервирует их тем же
+   * атомарным розыгрышем, без пересчёта.
+   */
+  backupCount?: number;
 }
 
 /* -------------------------------------------------------------------------
@@ -311,6 +342,111 @@ export interface TelegramAction {
 }
 
 /* -------------------------------------------------------------------------
+ * TWITTER / X — источник участников из ретвитов и ответов
+ * ---------------------------------------------------------------------- */
+
+export interface TwitterSource {
+  /** Публичная ссылка на твит: https://x.com/{author}/status/{id}. */
+  postUrl: string;
+  postId: string;
+  authorUsername: string;
+  mediaPreviewUrl?: string;
+  caption?: string;
+
+  /** Какие действия обязательны для участия (все выбранные — AND). */
+  requiredCriteria: TwitterCriteriaType[];
+  /** Ответ засчитывается только если содержит эту фразу/хэштег (аналог requireHashtag). */
+  requireHashtag?: string;
+
+  lastSyncedAt?: string;
+  qualifiedCount?: number;
+}
+
+/** Один пользователь X, взаимодействовавший с твитом (ретвит и/или ответ). */
+export interface TwitterEngagement {
+  id: string;
+  username: string;
+  avatarUrl?: string;
+  completedCriteria: TwitterCriteriaType[];
+  replyText?: string;
+  actedAt: string;
+  qualifies: boolean;
+}
+
+/* -------------------------------------------------------------------------
+ * YOUTUBE — источник участников из комментариев под видео
+ * ---------------------------------------------------------------------- */
+
+export interface YoutubeSource {
+  /** Публичная ссылка на видео. */
+  videoUrl: string;
+  videoId: string;
+  channelUsername: string;
+  mediaPreviewUrl?: string;
+  caption?: string;
+
+  /** Комментарий засчитывается только если содержит эту фразу/хэштег. */
+  requireKeyword?: string;
+  minCommentLength?: number;
+
+  lastSyncedAt?: string;
+  qualifiedCount?: number;
+}
+
+/** Один комментарий под видео YouTube, прошедший фильтр условий. */
+export interface YoutubeComment {
+  id: string;
+  username: string;
+  avatarUrl?: string;
+  text: string;
+  likeCount: number;
+  commentedAt: string;
+  qualifies: boolean;
+}
+
+/* -------------------------------------------------------------------------
+ * FACEBOOK — источник участников из комментариев/лайков под постом страницы
+ * ---------------------------------------------------------------------- */
+
+export interface FacebookSource {
+  /** Публичная ссылка на пост страницы Facebook. */
+  postUrl: string;
+  postId: string;
+  pageUsername: string;
+  mediaPreviewUrl?: string;
+  caption?: string;
+
+  requiredCriteria: FacebookCriteriaType[];
+
+  lastSyncedAt?: string;
+  qualifiedCount?: number;
+}
+
+/** Один пользователь Facebook, взаимодействовавший с постом (комментарий и/или лайк). */
+export interface FacebookEngagement {
+  id: string;
+  username: string;
+  avatarUrl?: string;
+  completedCriteria: FacebookCriteriaType[];
+  commentText?: string;
+  actedAt: string;
+  qualifies: boolean;
+}
+
+/* -------------------------------------------------------------------------
+ * MULTI-PLATFORM — объединение нескольких постов/площадок в один розыгрыш
+ * ---------------------------------------------------------------------- */
+
+/** Один "источник" внутри объединённого розыгрыша — конкретный пост на конкретной площадке. */
+export interface MultiPlatformEntry {
+  id: string;
+  platform: MultiPlatformKind;
+  postUrl: string;
+  label?: string;
+  qualifiedCount?: number;
+}
+
+/* -------------------------------------------------------------------------
  * WINNER / RANDOMIZER — честный выбор победителя
  * ---------------------------------------------------------------------- */
 
@@ -320,6 +456,12 @@ export interface Winner {
   prizeId: string;
   /** Порядковый номер внутри квоты этого приза (0, если приз даётся одному победителю). */
   placeInPrize: number;
+  /**
+   * true — это "запасной" победитель (placeInPrize выходит за пределы
+   * prize.quantity, но входит в prize.quantity + prize.backupCount).
+   * Приз переходит к нему по очереди, если основной победитель не откликнулся.
+   */
+  isBackup?: boolean;
   selectedAt: string; // ISO date
 }
 
@@ -360,8 +502,30 @@ export interface Giveaway {
   instagramSource?: InstagramSource;
   /** Заполнено, если entrySource === "telegram_channel". */
   telegramSource?: TelegramSource;
+  /** Заполнено, если entrySource === "twitter_engagement". */
+  twitterSource?: TwitterSource;
+  /** Заполнено, если entrySource === "youtube_comments". */
+  youtubeSource?: YoutubeSource;
+  /** Заполнено, если entrySource === "facebook_engagement". */
+  facebookSource?: FacebookSource;
+  /** Заполнено, если entrySource === "multi_platform" — список объединённых постов. */
+  multiPlatformSources?: MultiPlatformEntry[];
   /** Заполнено, если entrySource === "manual_list" — один вариант на строку. */
   manualEntries?: string[];
+
+  /**
+   * Имена/username, которых нужно исключить из розыгрыша (например, боты,
+   * сотрудники бренда, дисквалифицированные участники). Сравнение без учёта
+   * регистра и "@" в начале.
+   */
+  blacklist?: string[];
+  /**
+   * "Порог справедливого участия" — максимум заявок/комментариев, которые
+   * засчитываются от ОДНОГО и того же участника. Остальные его заявки
+   * отбрасываются до розыгрыша, чтобы один активный комментатор не занимал
+   * весь пул. Не задано/0 — без ограничения.
+   */
+  maxEntriesPerUser?: number;
 
   /**
    * Призы розыгрыша, ПО ПОРЯДКУ РОЗЫГРЫША: индекс 0 — приз, который
@@ -396,8 +560,15 @@ export interface Participant {
   id: string;
   giveawayId: string; // Giveaway.id
 
-  /** Откуда пришёл участник: форма, комментарий в IG, действие в Telegram или ручной список. */
-  source: "form" | "instagram_comment" | "telegram_action" | "manual_entry";
+  /** Откуда пришёл участник: форма, действие в одной из соцсетей или ручной список. */
+  source:
+    | "form"
+    | "instagram_comment"
+    | "telegram_action"
+    | "twitter_action"
+    | "youtube_comment"
+    | "facebook_action"
+    | "manual_entry";
 
   name: string;
   email: string;
@@ -417,6 +588,30 @@ export interface Participant {
     username: string;
     avatarUrl?: string;
     completedCriteria: TelegramCriteriaType[];
+  };
+
+  /** Заполнено, если source === "twitter_action". */
+  twitter?: {
+    actionId: string;
+    username: string;
+    avatarUrl?: string;
+    completedCriteria: TwitterCriteriaType[];
+  };
+
+  /** Заполнено, если source === "youtube_comment". */
+  youtube?: {
+    commentId: string;
+    username: string;
+    avatarUrl?: string;
+    commentText: string;
+  };
+
+  /** Заполнено, если source === "facebook_action". */
+  facebook?: {
+    actionId: string;
+    username: string;
+    avatarUrl?: string;
+    completedCriteria: FacebookCriteriaType[];
   };
 
   /** Значения кастомных полей: customFieldId -> value. */
@@ -451,7 +646,13 @@ export interface GiveawayDraft {
   entrySource: EntrySourceType;
   instagramSource?: InstagramSource;
   telegramSource?: TelegramSource;
+  twitterSource?: TwitterSource;
+  youtubeSource?: YoutubeSource;
+  facebookSource?: FacebookSource;
+  multiPlatformSources?: MultiPlatformEntry[];
   manualEntries?: string[];
+  blacklist?: string[];
+  maxEntriesPerUser?: number;
   entryConditions: EntryCondition[];
   tier: PlanTier;
   templateId?: string;

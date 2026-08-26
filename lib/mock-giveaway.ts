@@ -21,7 +21,13 @@ export function draftToGiveaway(draft: GiveawayDraft): Giveaway {
     entrySource: draft.entrySource,
     instagramSource: draft.instagramSource,
     telegramSource: draft.telegramSource,
+    twitterSource: draft.twitterSource,
+    youtubeSource: draft.youtubeSource,
+    facebookSource: draft.facebookSource,
+    multiPlatformSources: draft.multiPlatformSources,
     manualEntries: draft.manualEntries,
+    blacklist: draft.blacklist,
+    maxEntriesPerUser: draft.maxEntriesPerUser,
     prizes: draft.prizes,
     entryConditions: draft.entryConditions,
     customFields: draft.customFields,
@@ -335,12 +341,109 @@ export const DEMO_GIVEAWAY_WHEEL: Giveaway = {
   updatedAt: new Date().toISOString(),
 };
 
+/**
+ * Демо-розыгрыш №6 — участники импортируются из ретвитов/ответов на твит (X),
+ * плюс показывает "запасных победителей" (backupCount): если основной не
+ * откликнется, приз по очереди уходит запасным — без пересчёта.
+ */
+export const DEMO_GIVEAWAY_TWITTER: Giveaway = {
+  id: "demo-6",
+  ownerId: "demo-user",
+  title: "Розыгрыш подписки X Premium 𝕏",
+  description:
+    "Разыгрываем годовую подписку X Premium среди тех, кто сделает ретвит и напишет ответ под этим твитом.",
+  slug: "demo-twitter-premium",
+  status: "active",
+  tier: "free",
+  visibility: "public",
+  drawStyle: "list",
+  entrySource: "twitter_engagement",
+  twitterSource: {
+    postUrl: "https://x.com/rafflix/status/1234567890123456789",
+    postId: "1234567890123456789",
+    authorUsername: "rafflix",
+    mediaPreviewUrl: "https://picsum.photos/seed/twitter-premium-giveaway/600/600",
+    caption: "Розыгрыш X Premium на год! Ретвит + ответ = участие 🎁",
+    requiredCriteria: ["retweet", "reply"],
+    lastSyncedAt: new Date().toISOString(),
+    qualifiedCount: 22,
+  },
+  prizes: [
+    {
+      id: "prize-x-premium",
+      type: "digital",
+      title: "X Premium на 12 месяцев",
+      description: "Активация промокодом на ваш аккаунт",
+      estimatedValue: 84,
+      currency: "USD",
+      digitalDeliveryMethod: "promo_code",
+      quantity: 1,
+      // Если победитель не откликнется в течение 48 часов — приз уходит запасному.
+      backupCount: 2,
+    },
+  ],
+  entryConditions: [],
+  customFields: [],
+  templateId: FREE_TEMPLATES[1].id,
+  startDate: new Date().toISOString(),
+  endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+  timezone: "Europe/Moscow",
+  participantsCount: 22,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+/**
+ * Демо-розыгрыш №7 — entrySource: "multi_platform": Instagram + Telegram +
+ * YouTube объединены в один общий пул участников одного розыгрыша.
+ */
+export const DEMO_GIVEAWAY_MULTI: Giveaway = {
+  id: "demo-7",
+  ownerId: "demo-user",
+  title: "Большой розыгрыш к юбилею бренда 🎉",
+  description:
+    "Собираем участников сразу с трёх площадок — Instagram, Telegram и YouTube — в один честный розыгрыш.",
+  slug: "demo-multi-platform",
+  status: "active",
+  tier: "free",
+  visibility: "public",
+  drawStyle: "list",
+  entrySource: "multi_platform",
+  multiPlatformSources: [
+    { id: "mp-ig", platform: "instagram", postUrl: "https://instagram.com/p/DEMO_MULTI_IG/", qualifiedCount: 34 },
+    { id: "mp-tg", platform: "telegram", postUrl: "https://t.me/rafflix_giveaways/501", qualifiedCount: 21 },
+    { id: "mp-yt", platform: "youtube", postUrl: "https://www.youtube.com/watch?v=DEMO_MULTI_YT", qualifiedCount: 15 },
+  ],
+  prizes: [
+    {
+      id: "prize-anniversary",
+      type: "physical",
+      title: "Фирменный merch-набор",
+      description: "Худи, кружка и стикерпак с лимитированным дизайном",
+      estimatedValue: 90,
+      currency: "USD",
+      quantity: 3,
+    },
+  ],
+  entryConditions: [],
+  customFields: [],
+  templateId: FREE_TEMPLATES[2].id,
+  startDate: new Date().toISOString(),
+  endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+  timezone: "Europe/Moscow",
+  participantsCount: 70,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
 export const DEMO_GIVEAWAYS: Giveaway[] = [
   DEMO_GIVEAWAY,
   DEMO_GIVEAWAY_INSTAGRAM,
   DEMO_GIVEAWAY_TELEGRAM,
   DEMO_GIVEAWAY_COMPLETED,
   DEMO_GIVEAWAY_WHEEL,
+  DEMO_GIVEAWAY_TWITTER,
+  DEMO_GIVEAWAY_MULTI,
 ];
 
 /** Заглушка асинхронного запроса к БД по slug'у (заменить на Supabase select). */

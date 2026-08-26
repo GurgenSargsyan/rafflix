@@ -9,6 +9,10 @@ import { ConditionsChecklist } from "@/components/giveaway/ConditionsChecklist";
 import { ParticipateForm } from "@/components/giveaway/ParticipateForm";
 import { InstagramCommentsCard } from "@/components/giveaway/InstagramCommentsCard";
 import { TelegramActionsCard } from "@/components/giveaway/TelegramActionsCard";
+import { TwitterEngagementCard } from "@/components/giveaway/TwitterEngagementCard";
+import { YoutubeCommentsCard } from "@/components/giveaway/YoutubeCommentsCard";
+import { FacebookEngagementCard } from "@/components/giveaway/FacebookEngagementCard";
+import { MultiPlatformCard } from "@/components/giveaway/MultiPlatformCard";
 import { ManualListCard } from "@/components/giveaway/ManualListCard";
 import { SpinWheelBackground } from "@/components/giveaway/SpinWheelBackground";
 import { Logo } from "@/components/ui/Logo";
@@ -107,6 +111,34 @@ export function GiveawayLanding({ giveaway }: GiveawayLandingProps) {
           /* Участники импортируются из действий в Telegram-канале — форма не нужна */
           <TelegramActionsCard
             source={giveaway.telegramSource}
+            primaryColor={theme.primary}
+            secondaryColor={theme.secondary}
+          />
+        ) : giveaway.entrySource === "twitter_engagement" && giveaway.twitterSource ? (
+          /* Участники импортируются из ретвитов/ответов на твит — форма не нужна */
+          <TwitterEngagementCard
+            source={giveaway.twitterSource}
+            primaryColor={theme.primary}
+            secondaryColor={theme.secondary}
+          />
+        ) : giveaway.entrySource === "youtube_comments" && giveaway.youtubeSource ? (
+          /* Участники импортируются из комментариев под видео — форма не нужна */
+          <YoutubeCommentsCard
+            source={giveaway.youtubeSource}
+            primaryColor={theme.primary}
+            secondaryColor={theme.secondary}
+          />
+        ) : giveaway.entrySource === "facebook_engagement" && giveaway.facebookSource ? (
+          /* Участники импортируются из комментариев/лайков поста — форма не нужна */
+          <FacebookEngagementCard
+            source={giveaway.facebookSource}
+            primaryColor={theme.primary}
+            secondaryColor={theme.secondary}
+          />
+        ) : giveaway.entrySource === "multi_platform" ? (
+          /* Несколько площадок объединены в один пул участников — форма не нужна */
+          <MultiPlatformCard
+            sources={giveaway.multiPlatformSources ?? []}
             primaryColor={theme.primary}
             secondaryColor={theme.secondary}
           />

@@ -42,6 +42,19 @@ function canGoNext(step: WizardStep, draft: ReturnType<typeof useGiveawayStore.g
           (draft.telegramSource?.requiredCriteria?.length ?? 0) > 0
         );
       }
+      if (draft.entrySource === "twitter_engagement") {
+        return !!draft.twitterSource?.postUrl?.trim() && (draft.twitterSource?.requiredCriteria?.length ?? 0) > 0;
+      }
+      if (draft.entrySource === "youtube_comments") return !!draft.youtubeSource?.videoUrl?.trim();
+      if (draft.entrySource === "facebook_engagement") {
+        return (
+          !!draft.facebookSource?.postUrl?.trim() && (draft.facebookSource?.requiredCriteria?.length ?? 0) > 0
+        );
+      }
+      if (draft.entrySource === "multi_platform") {
+        return (draft.multiPlatformSources ?? []).length >= 2 &&
+          (draft.multiPlatformSources ?? []).every((s) => s.postUrl.trim().length > 0);
+      }
       if (draft.entrySource === "manual_list") return (draft.manualEntries?.length ?? 0) >= 2;
       return true;
     case "plan":
@@ -51,7 +64,16 @@ function canGoNext(step: WizardStep, draft: ReturnType<typeof useGiveawayStore.g
   }
 }
 
-const VALID_SOURCES: EntrySourceType[] = ["form", "instagram_comments", "telegram_channel"];
+const VALID_SOURCES: EntrySourceType[] = [
+  "form",
+  "instagram_comments",
+  "telegram_channel",
+  "twitter_engagement",
+  "youtube_comments",
+  "facebook_engagement",
+  "multi_platform",
+  "manual_list",
+];
 const VALID_DRAW_STYLES: DrawStyle[] = ["list", "wheel"];
 
 interface GiveawayCreatorWizardProps {

@@ -67,6 +67,12 @@ export async function computeVerificationHash(seed: string, participantIds: stri
  * "порции" — по порядку призов (prizes[0] получает первую порцию длиной
  * quantity, prizes[1] — следующую, и т.д.). Один и тот же участник не может
  * выиграть дважды. Порядок призов = порядок последовательного розыгрыша.
+ *
+ * Каждая порция на самом деле шире: quantity + backupCount. Первые
+ * `quantity` мест — основные победители (placeInPrize 0..quantity-1),
+ * следующие `backupCount` — "запасные" (isBackup: true, placeInPrize
+ * продолжает нумерацию дальше) — тот же атомарный розыгрыш, без пересчёта,
+ * на случай если основной победитель не откликнется.
  */
 function assignSequentially(shuffled: Participant[], prizes: Prize[]): Winner[] {
   const winners: Winner[] = [];
@@ -74,16 +80,18 @@ function assignSequentially(shuffled: Participant[], prizes: Prize[]): Winner[] 
 
   for (const prize of prizes) {
     const quantity = Math.max(1, prize.quantity);
-    const slice = shuffled.slice(cursor, cursor + quantity);
+    const backupCount = Math.max(0, prize.backupCount ?? 0);
+    const slice = shuffled.slice(cursor, cursor + quantity + backupCount);
     slice.forEach((p, i) => {
       winners.push({
         participantId: p.id,
         prizeId: prize.id,
         placeInPrize: i,
+        isBackup: i >= quantity,
         selectedAt: new Date().toISOString(),
       });
     });
-    cursor += quantity;
+    cursor += quantity + backupCount;
   }
 
   return winners;

@@ -1,9 +1,22 @@
 import { nanoid } from "nanoid";
 import type { Prize } from "@/types";
 
-/** Суммарное число победителей по всем призам розыгрыша. */
+/** Суммарное число ОСНОВНЫХ победителей по всем призам розыгрыша (без запасных). */
 export function totalWinnerCount(prizes: Prize[]): number {
   return prizes.reduce((sum, p) => sum + Math.max(1, p.quantity), 0);
+}
+
+/** Суммарное число "запасных" победителей по всем призам розыгрыша. */
+export function totalBackupCount(prizes: Prize[]): number {
+  return prizes.reduce((sum, p) => sum + Math.max(0, p.backupCount ?? 0), 0);
+}
+
+/** Человекочитаемая подпись места ВНУТРИ приза: "Победитель" / "Запасной #N". */
+export function winnerPlaceLabel(placeInPrize: number, quantity: number): string {
+  if (placeInPrize < quantity) {
+    return quantity > 1 ? `Победитель #${placeInPrize + 1}` : "Победитель";
+  }
+  return `Запасной #${placeInPrize - quantity + 1}`;
 }
 
 /** Новый пустой приз для добавления в список ("ещё одно место"). */

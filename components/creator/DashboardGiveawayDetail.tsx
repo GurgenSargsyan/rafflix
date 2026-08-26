@@ -2,20 +2,49 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Instagram, Send, Mail, ListPlus, Users, Trophy, PartyPopper } from "lucide-react";
+import {
+  ArrowLeft,
+  ExternalLink,
+  Instagram,
+  Send,
+  Twitter,
+  Youtube,
+  Facebook,
+  Layers,
+  Mail,
+  ListPlus,
+  Users,
+  Trophy,
+  PartyPopper,
+} from "lucide-react";
 import { RandomizerReveal } from "@/components/creator/RandomizerReveal";
 import { SpinWheelReveal } from "@/components/creator/SpinWheelReveal";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
 import { saveRandomizerResult } from "@/lib/services/supabase";
-import {
-  generateMockFormParticipants,
-  generateMockInstagramParticipants,
-  generateMockTelegramParticipants,
-  manualEntriesToParticipants,
-} from "@/lib/mock-participants";
-import { formatNumber } from "@/lib/utils";
-import type { Giveaway, RandomizerResult } from "@/types";
+import { buildParticipants } from "@/lib/mock-participants";
+import { formatNumber, cn } from "@/lib/utils";
+import type { Giveaway, Participant, RandomizerResult } from "@/types";
+
+const SOURCE_BADGES: Partial<Record<Giveaway["entrySource"], { icon: typeof Instagram; label: string; color: string }>> = {
+  instagram_comments: { icon: Instagram, label: "из комментариев", color: "text-neon-fuchsia" },
+  telegram_channel: { icon: Send, label: "из Telegram-канала", color: "text-neon-cyan" },
+  twitter_engagement: { icon: Twitter, label: "из X (Twitter)", color: "text-neon-cyan" },
+  youtube_comments: { icon: Youtube, label: "из YouTube", color: "text-red-400" },
+  facebook_engagement: { icon: Facebook, label: "из Facebook", color: "text-neon-cyan" },
+  multi_platform: { icon: Layers, label: "несколько площадок", color: "text-neon-violet" },
+  manual_list: { icon: ListPlus, label: "свой список", color: "text-neon-fuchsia" },
+};
+
+/** Отображаемое имя участника независимо от источника — с "@" для соцсетей, как есть для формы/списка. */
+function participantDisplayName(p: Participant): string {
+  if (p.source === "instagram_comment") return `@${p.instagram?.username ?? p.name}`;
+  if (p.source === "telegram_action") return `@${p.telegram?.username ?? p.name}`;
+  if (p.source === "twitter_action") return `@${p.twitter?.username ?? p.name}`;
+  if (p.source === "youtube_comment") return `@${p.youtube?.username ?? p.name}`;
+  if (p.source === "facebook_action") return p.facebook?.username ?? p.name;
+  return p.name;
+}
 
 interface DashboardGiveawayDetailProps {
   giveaway: Giveaway;
@@ -32,18 +61,7 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
   };
 
   // В реальном приложении — запрос участников из БД по giveaway.id.
-  const participants = useMemo(() => {
-    if (giveaway.entrySource === "instagram_comments") {
-      return generateMockInstagramParticipants(giveaway.id, giveaway.participantsCount);
-    }
-    if (giveaway.entrySource === "telegram_channel") {
-      return generateMockTelegramParticipants(giveaway.id, giveaway.participantsCount);
-    }
-    if (giveaway.entrySource === "manual_list") {
-      return manualEntriesToParticipants(giveaway.id, giveaway.manualEntries ?? []);
-    }
-    return generateMockFormParticipants(giveaway.id, giveaway.participantsCount);
-  }, [giveaway.id, giveaway.entrySource, giveaway.participantsCount, giveaway.manualEntries]);
+  const participants = useMemo(() => buildParticipants(giveaway), [giveaway]);
 
   const visibleParticipants = showAllParticipants ? participants : participants.slice(0, 8);
 
@@ -90,19 +108,13 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
               <Users className="size-4" style={{ color: theme.primary }} />
               Участники ({formatNumber(participants.length)})
             </h2>
-            {giveaway.entrySource === "instagram_comments" && (
-              <span className="flex items-center gap-1 text-[11px] text-neon-fuchsia">
-                <Instagram className="size-3.5" /> из комментариев
-              </span>
-            )}
-            {giveaway.entrySource === "telegram_channel" && (
-              <span className="flex items-center gap-1 text-[11px] text-neon-cyan">
-                <Send className="size-3.5" /> из Telegram-канала
-              </span>
-            )}
-            {giveaway.entrySource === "manual_list" && (
-              <span className="flex items-center gap-1 text-[11px] text-neon-fuchsia">
-                <ListPlus className="size-3.5" /> свой список
+            {SOURCE_BADGES[giveaway.entrySource] && (
+              <span className={cn("flex items-center gap-1 text-[11px]", SOURCE_BADGES[giveaway.entrySource]!.color)}>
+                {(() => {
+                  const Icon = SOURCE_BADGES[giveaway.entrySource]!.icon;
+                  return <Icon className="size-3.5" />;
+                })()}
+                {SOURCE_BADGES[giveaway.entrySource]!.label}
               </span>
             )}
           </div>
@@ -114,23 +126,10 @@ export function DashboardGiveawayDetail({ giveaway }: DashboardGiveawayDetailPro
                   className="size-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
                   style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
                 >
-                  {(p.source === "instagram_comment"
-                    ? p.instagram?.username ?? p.name
-                    : p.source === "telegram_action"
-                      ? p.telegram?.username ?? p.name
-                      : p.name)
-                    .replace("@", "")
-                    .slice(0, 2)
-                    .toUpperCase()}
+                  {participantDisplayName(p).replace("@", "").slice(0, 2).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-white font-medium truncate">
-                    {p.source === "instagram_comment"
-                      ? `@${p.instagram?.username}`
-                      : p.source === "telegram_action"
-                        ? `@${p.telegram?.username}`
-                        : p.name}
-                  </p>
+                  <p className="text-xs text-white font-medium truncate">{participantDisplayName(p)}</p>
                   {p.source === "form" && (
                     <p className="text-[11px] text-white/35 truncate flex items-center gap-1">
                       <Mail className="size-2.5" /> {p.email}

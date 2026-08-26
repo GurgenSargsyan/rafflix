@@ -3,7 +3,20 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Crown, Instagram, Send, FormInput, ListPlus, Users, Globe2 } from "lucide-react";
+import {
+  ArrowRight,
+  Crown,
+  Instagram,
+  Send,
+  Twitter,
+  Youtube,
+  Facebook,
+  Layers,
+  FormInput,
+  ListPlus,
+  Users,
+  Globe2,
+} from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import type { EntrySourceType, Giveaway } from "@/types";
@@ -12,39 +25,34 @@ interface PublicGiveawaysDirectoryProps {
   giveaways: Giveaway[];
 }
 
+const SOURCE_META: Record<EntrySourceType, { label: string; icon: typeof Globe2 }> = {
+  instagram_comments: { label: "Instagram-комментарии", icon: Instagram },
+  telegram_channel: { label: "Telegram-канал", icon: Send },
+  twitter_engagement: { label: "X (Twitter)", icon: Twitter },
+  youtube_comments: { label: "YouTube", icon: Youtube },
+  facebook_engagement: { label: "Facebook", icon: Facebook },
+  multi_platform: { label: "Несколько площадок", icon: Layers },
+  manual_list: { label: "Свой список", icon: ListPlus },
+  form: { label: "Форма на сайте", icon: FormInput },
+};
+
 const FILTERS: { value: EntrySourceType | "all"; label: string; icon: typeof Globe2 }[] = [
   { value: "all", label: "Все", icon: Globe2 },
   { value: "instagram_comments", label: "Instagram", icon: Instagram },
   { value: "telegram_channel", label: "Telegram", icon: Send },
+  { value: "twitter_engagement", label: "X (Twitter)", icon: Twitter },
+  { value: "youtube_comments", label: "YouTube", icon: Youtube },
+  { value: "facebook_engagement", label: "Facebook", icon: Facebook },
+  { value: "multi_platform", label: "Несколько площадок", icon: Layers },
   { value: "form", label: "Форма на сайте", icon: FormInput },
   { value: "manual_list", label: "Свой список", icon: ListPlus },
 ];
 
 function SourceBadge({ source }: { source: EntrySourceType }) {
-  if (source === "instagram_comments") {
-    return (
-      <>
-        <Instagram className="size-3.5" /> Instagram-комментарии
-      </>
-    );
-  }
-  if (source === "telegram_channel") {
-    return (
-      <>
-        <Send className="size-3.5" /> Telegram-канал
-      </>
-    );
-  }
-  if (source === "manual_list") {
-    return (
-      <>
-        <ListPlus className="size-3.5" /> Свой список
-      </>
-    );
-  }
+  const { icon: Icon, label } = SOURCE_META[source];
   return (
     <>
-      <FormInput className="size-3.5" /> Форма на сайте
+      <Icon className="size-3.5" /> {label}
     </>
   );
 }

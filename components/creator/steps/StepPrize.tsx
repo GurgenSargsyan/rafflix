@@ -7,7 +7,7 @@ import { StepEyebrow } from "@/components/creator/StepEyebrow";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Switch } from "@/components/ui/Switch";
 import { Button } from "@/components/ui/Button";
-import { placeLabel, totalWinnerCount, isValueRequired, resolveShowValue } from "@/lib/prizes";
+import { placeLabel, totalWinnerCount, totalBackupCount, isValueRequired, resolveShowValue } from "@/lib/prizes";
 import { cn } from "@/lib/utils";
 import type { Prize, PrizeType } from "@/types";
 
@@ -154,6 +154,15 @@ export function StepPrize() {
                   />
                 </div>
 
+                <Input
+                  label="Запасных победителей (необязательно)"
+                  type="number"
+                  min={0}
+                  value={prize.backupCount ?? 0}
+                  hint="Если основной победитель не откликнется, приз перейдёт к запасному по очереди — без пересчёта"
+                  onChange={(e) => updatePrize(prize.id, { backupCount: Math.max(0, Number(e.target.value) || 0) })}
+                />
+
                 <div className="p-3 rounded-xl glass border border-white/10">
                   <Switch
                     checked={resolveShowValue(prize)}
@@ -187,6 +196,9 @@ export function StepPrize() {
       <p className="text-xs text-white/35 text-center">
         Всего победителей: <span className="text-white/60 font-medium">{totalWinnerCount(draft.prizes)}</span>
         {" "}по {draft.prizes.length} {draft.prizes.length === 1 ? "призу" : "призам"}
+        {totalBackupCount(draft.prizes) > 0 && (
+          <> · <span className="text-white/60 font-medium">{totalBackupCount(draft.prizes)}</span> запасных</>
+        )}
       </p>
     </div>
   );

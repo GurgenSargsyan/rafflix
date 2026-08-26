@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Trophy, ShieldCheck, ExternalLink, Clock3, Instagram, Send, Mail } from "lucide-react";
+import { Trophy, ShieldCheck, ExternalLink, Clock3, Instagram, Send, Twitter, Youtube, Facebook, Mail, Shield } from "lucide-react";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { CertificateCard } from "@/components/giveaway/CertificateCard";
 import { CertificateDownloadButton } from "@/components/giveaway/CertificateDownloadButton";
 import { resolveGiveawayTheme } from "@/lib/mock-giveaway";
 import { getStoredRandomizerResult } from "@/lib/services/supabase";
-import { placeLabel } from "@/lib/prizes";
+import { placeLabel, winnerPlaceLabel } from "@/lib/prizes";
 import type { Giveaway, Participant } from "@/types";
 
 interface ResultsViewProps {
@@ -20,12 +20,18 @@ interface ResultsViewProps {
 function participantLabel(p: Participant) {
   if (p.source === "instagram_comment") return `@${p.instagram?.username ?? p.name}`;
   if (p.source === "telegram_action") return `@${p.telegram?.username ?? p.name}`;
+  if (p.source === "twitter_action") return `@${p.twitter?.username ?? p.name}`;
+  if (p.source === "youtube_comment") return `@${p.youtube?.username ?? p.name}`;
+  if (p.source === "facebook_action") return p.facebook?.username ?? p.name;
   return p.name;
 }
 
 function SourceIcon({ p }: { p: Participant }) {
   if (p.source === "instagram_comment") return <Instagram className="size-3.5 text-white/30" />;
   if (p.source === "telegram_action") return <Send className="size-3.5 text-white/30" />;
+  if (p.source === "twitter_action") return <Twitter className="size-3.5 text-white/30" />;
+  if (p.source === "youtube_comment") return <Youtube className="size-3.5 text-white/30" />;
+  if (p.source === "facebook_action") return <Facebook className="size-3.5 text-white/30" />;
   return <Mail className="size-3.5 text-white/30" />;
 }
 
@@ -102,12 +108,17 @@ export function ResultsView({ giveaway, participants }: ResultsViewProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-white flex items-center gap-1.5">
-                          <Trophy className="size-3.5" style={{ color: theme.primary }} />
+                          {w.isBackup ? (
+                            <Shield className="size-3.5 text-white/40" />
+                          ) : (
+                            <Trophy className="size-3.5" style={{ color: theme.primary }} />
+                          )}
                           {participantLabel(participant)}
                           <SourceIcon p={participant} />
                         </p>
                         <p className="text-xs text-white/40">
                           {placeLabel(prizeIndex)} · {prize.title}
+                          {w.isBackup && ` · ${winnerPlaceLabel(w.placeInPrize, prize.quantity)}`}
                         </p>
                       </div>
                     </div>

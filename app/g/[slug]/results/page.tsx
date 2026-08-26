@@ -1,12 +1,7 @@
 import { notFound } from "next/navigation";
 import { ResultsView } from "@/components/giveaway/ResultsView";
 import { getGiveawayBySlug } from "@/lib/mock-giveaway";
-import {
-  generateMockFormParticipants,
-  generateMockInstagramParticipants,
-  generateMockTelegramParticipants,
-  manualEntriesToParticipants,
-} from "@/lib/mock-participants";
+import { buildParticipants } from "@/lib/mock-participants";
 
 interface ResultsPageProps {
   params: { slug: string };
@@ -24,14 +19,7 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
   }
 
   // В реальном приложении — запрос участников из БД по giveaway.id (см. DashboardGiveawayDetail).
-  const participants =
-    giveaway.entrySource === "instagram_comments"
-      ? generateMockInstagramParticipants(giveaway.id, giveaway.participantsCount)
-      : giveaway.entrySource === "telegram_channel"
-        ? generateMockTelegramParticipants(giveaway.id, giveaway.participantsCount)
-        : giveaway.entrySource === "manual_list"
-          ? manualEntriesToParticipants(giveaway.id, giveaway.manualEntries ?? [])
-          : generateMockFormParticipants(giveaway.id, giveaway.participantsCount);
+  const participants = buildParticipants(giveaway);
 
   return <ResultsView giveaway={giveaway} participants={participants} />;
 }

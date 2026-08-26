@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Instagram,
   Send,
+  Twitter,
+  Youtube,
+  Facebook,
+  Layers,
   FormInput,
   ListPlus,
   RefreshCw,
@@ -22,6 +26,11 @@ import {
 import { useGiveawayStore } from "@/store/useGiveawayStore";
 import { StepEyebrow } from "@/components/creator/StepEyebrow";
 import { WheelPreview } from "@/components/creator/WheelPreview";
+import { TwitterSourcePanel } from "@/components/creator/source-panels/TwitterSourcePanel";
+import { YoutubeSourcePanel } from "@/components/creator/source-panels/YoutubeSourcePanel";
+import { FacebookSourcePanel } from "@/components/creator/source-panels/FacebookSourcePanel";
+import { MultiPlatformSourcePanel } from "@/components/creator/source-panels/MultiPlatformSourcePanel";
+import { FairnessSettingsPanel } from "@/components/creator/source-panels/FairnessSettingsPanel";
 import { Input } from "@/components/ui/Input";
 import { Switch } from "@/components/ui/Switch";
 import { Button } from "@/components/ui/Button";
@@ -48,6 +57,30 @@ const SOURCE_OPTIONS: {
     icon: Send,
   },
   {
+    value: "twitter_engagement",
+    title: "X (Twitter)",
+    description: "Ретвит и/или ответ на твит — на выбор.",
+    icon: Twitter,
+  },
+  {
+    value: "youtube_comments",
+    title: "YouTube",
+    description: "Комментарии под видео на канале.",
+    icon: Youtube,
+  },
+  {
+    value: "facebook_engagement",
+    title: "Facebook",
+    description: "Комментарий и/или лайк под постом страницы.",
+    icon: Facebook,
+  },
+  {
+    value: "multi_platform",
+    title: "Несколько площадок",
+    description: "Объединить посты с разных соцсетей в один общий пул участников.",
+    icon: Layers,
+  },
+  {
     value: "form",
     title: "Форма на сайте",
     description: "Классическая регистрация: имя, email, соц. сети.",
@@ -59,6 +92,16 @@ const SOURCE_OPTIONS: {
     description: "Впишите варианты вручную — без регистрации, идеально для Колеса Фортуны.",
     icon: ListPlus,
   },
+];
+
+/** Источники с реальной аудиторией — для них показываем блок "Защита от накруток". */
+const AUDIENCE_SOURCES: EntrySourceType[] = [
+  "instagram_comments",
+  "telegram_channel",
+  "twitter_engagement",
+  "youtube_comments",
+  "facebook_engagement",
+  "multi_platform",
 ];
 
 /** Косметический шаффл для кнопки "Перемешать" — не связан с честностью розыгрыша. */
@@ -101,7 +144,12 @@ export function StepSource() {
 
   const isInstagram = draft.entrySource === "instagram_comments";
   const isTelegram = draft.entrySource === "telegram_channel";
+  const isTwitter = draft.entrySource === "twitter_engagement";
+  const isYoutube = draft.entrySource === "youtube_comments";
+  const isFacebook = draft.entrySource === "facebook_engagement";
+  const isMultiPlatform = draft.entrySource === "multi_platform";
   const isManualList = draft.entrySource === "manual_list";
+  const showFairnessSettings = AUDIENCE_SOURCES.includes(draft.entrySource);
   const ig = draft.instagramSource;
   const tg = draft.telegramSource;
 
@@ -464,7 +512,14 @@ export function StepSource() {
             </div>
           </motion.div>
         )}
+
+        {isTwitter && <TwitterSourcePanel key="tw-panel" />}
+        {isYoutube && <YoutubeSourcePanel key="yt-panel" />}
+        {isFacebook && <FacebookSourcePanel key="fb-panel" />}
+        {isMultiPlatform && <MultiPlatformSourcePanel key="multi-panel" />}
       </AnimatePresence>
+
+      {showFairnessSettings && <FairnessSettingsPanel />}
 
       {draft.entrySource === "form" && (
         <p className="text-xs text-white/35 italic">

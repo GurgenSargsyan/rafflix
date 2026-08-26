@@ -33,10 +33,14 @@ export function CertificateCard({
   secondaryColor,
 }: CertificateCardProps) {
   // Порядок призов в розыгрыше (главный приз первым), а не алфавитный по prizeId.
+  // Запасные победители (isBackup) на сертификат не попадают — это публичный
+  // "снимок" результата, показывает только подтверждённых основных победителей.
   const prizeOrder = new Map(prizes.map((p, i) => [p.id, i]));
-  const winners = [...result.winners].sort(
-    (a, b) => (prizeOrder.get(a.prizeId) ?? 0) - (prizeOrder.get(b.prizeId) ?? 0) || a.placeInPrize - b.placeInPrize
-  );
+  const winners = result.winners
+    .filter((w) => !w.isBackup)
+    .sort(
+      (a, b) => (prizeOrder.get(a.prizeId) ?? 0) - (prizeOrder.get(b.prizeId) ?? 0) || a.placeInPrize - b.placeInPrize
+    );
 
   return (
     <div

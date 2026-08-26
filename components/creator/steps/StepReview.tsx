@@ -8,6 +8,10 @@ import {
   Gift,
   Instagram,
   Send,
+  Twitter,
+  Youtube,
+  Facebook,
+  Layers,
   FormInput,
   ListChecks,
   Palette,
@@ -24,9 +28,22 @@ import { Button } from "@/components/ui/Button";
 import { draftToGiveaway } from "@/lib/mock-giveaway";
 import { saveGiveaway } from "@/lib/services/supabase";
 import { criteriaLabel } from "@/lib/services/telegram";
-import { placeLabel, totalWinnerCount, resolveShowValue } from "@/lib/prizes";
+import { twitterCriteriaLabel } from "@/lib/services/twitter";
+import { facebookCriteriaLabel } from "@/lib/services/facebook";
+import { placeLabel, totalWinnerCount, totalBackupCount, resolveShowValue } from "@/lib/prizes";
 import { formatNumber, cn } from "@/lib/utils";
-import type { GiveawayVisibility } from "@/types";
+import type { EntrySourceType, GiveawayVisibility } from "@/types";
+
+const ENTRY_SOURCE_ICON: Record<EntrySourceType, typeof Instagram> = {
+  instagram_comments: Instagram,
+  telegram_channel: Send,
+  twitter_engagement: Twitter,
+  youtube_comments: Youtube,
+  facebook_engagement: Facebook,
+  multi_platform: Layers,
+  manual_list: ListPlus,
+  form: FormInput,
+};
 
 const VISIBILITY_OPTIONS: {
   value: GiveawayVisibility;
@@ -100,13 +117,16 @@ export function StepReview() {
         <SummaryRow icon={Gift} label="Название" value={draft.title || "—"} />
         <SummaryRow
           icon={Gift}
-          label={`Призы (${draft.prizes.length}), победителей: ${totalWinnerCount(draft.prizes)}`}
+          label={`Призы (${draft.prizes.length}), победителей: ${totalWinnerCount(draft.prizes)}${
+            totalBackupCount(draft.prizes) > 0 ? ` (+${totalBackupCount(draft.prizes)} запасных)` : ""
+          }`}
           value={
             <ul className="space-y-0.5">
               {draft.prizes.map((p, i) => (
                 <li key={p.id}>
                   {placeLabel(i)}: {p.title || "—"} ({PRIZE_TYPE_SHORT[p.type]}
-                  {p.quantity > 1 ? `, ×${p.quantity}` : ""})
+                  {p.quantity > 1 ? `, ×${p.quantity}` : ""}
+                  {(p.backupCount ?? 0) > 0 ? `, +${p.backupCount} запасных` : ""})
                   {p.estimatedValue != null &&
                     (resolveShowValue(p) ? (
                       <span className="text-white/50"> · ${formatNumber(p.estimatedValue)}</span>
@@ -119,15 +139,7 @@ export function StepReview() {
           }
         />
         <SummaryRow
-          icon={
-            draft.entrySource === "instagram_comments"
-              ? Instagram
-              : draft.entrySource === "telegram_channel"
-                ? Send
-                : draft.entrySource === "manual_list"
-                  ? ListPlus
-                  : FormInput
-          }
+          icon={ENTRY_SOURCE_ICON[draft.entrySource]}
           label="Источник участников"
           value={
             draft.entrySource === "instagram_comments" ? (
@@ -141,6 +153,28 @@ export function StepReview() {
                 Telegram-канал ({draft.telegramSource?.requiredCriteria?.map(criteriaLabel).join(" + ") || "—"})
                 {draft.telegramSource?.qualifiedCount != null &&
                   ` · ${formatNumber(draft.telegramSource.qualifiedCount)} подходящих подписчиков`}
+              </span>
+            ) : draft.entrySource === "twitter_engagement" ? (
+              <span className="text-neon-cyan font-medium">
+                X (Twitter) ({draft.twitterSource?.requiredCriteria?.map(twitterCriteriaLabel).join(" + ") || "—"})
+                {draft.twitterSource?.qualifiedCount != null &&
+                  ` · ${formatNumber(draft.twitterSource.qualifiedCount)} подходящих`}
+              </span>
+            ) : draft.entrySource === "youtube_comments" ? (
+              <span className="text-red-400 font-medium">
+                Комментарии YouTube
+                {draft.youtubeSource?.qualifiedCount != null &&
+                  ` · ${formatNumber(draft.youtubeSource.qualifiedCount)} подходящих комментариев`}
+              </span>
+            ) : draft.entrySource === "facebook_engagement" ? (
+              <span className="text-neon-cyan font-medium">
+                Facebook ({draft.facebookSource?.requiredCriteria?.map(facebookCriteriaLabel).join(" + ") || "—"})
+                {draft.facebookSource?.qualifiedCount != null &&
+                  ` · ${formatNumber(draft.facebookSource.qualifiedCount)} подходящих`}
+              </span>
+            ) : draft.entrySource === "multi_platform" ? (
+              <span className="text-neon-violet font-medium">
+                Несколько площадок ({(draft.multiPlatformSources ?? []).length})
               </span>
             ) : draft.entrySource === "manual_list" ? (
               <span className="text-neon-fuchsia font-medium">
