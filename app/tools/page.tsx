@@ -1,9 +1,16 @@
 import Link from "next/link";
-import { Type, Gauge, ArrowUpRight } from "lucide-react";
+import { Type, Gauge, MessageSquareText, ArrowUpRight } from "lucide-react";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Logo } from "@/components/ui/Logo";
 
 const TOOLS = [
+  {
+    href: "/tools/caption-generator",
+    icon: MessageSquareText,
+    title: "Генератор подписей",
+    description: "Готовая подпись для розыгрыша — приз, правила, срок и тон",
+    accent: "text-neon-fuchsia",
+  },
   {
     href: "/tools/font-generator",
     icon: Type,
@@ -25,8 +32,8 @@ const TOOLS = [
  * "просмотр историй анонимно" / "скачать аватар" / "экспорт комментариев" —
  * без официального доступа к API Instagram такие инструменты либо не
  * работают на самом деле, либо подсовывают выдуманные данные вместо чужого
- * реального профиля. Оба инструмента ниже считают честно — без обращения к
- * чужим аккаунтам.
+ * реального профиля. Инструменты ниже честные — считают/генерируют результат
+ * из того, что ввёл сам пользователь, без обращения к чужим аккаунтам.
  */
 export default function ToolsHubPage() {
   return (
